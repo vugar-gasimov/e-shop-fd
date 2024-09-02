@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { TfiEmail } from 'react-icons/tfi';
 import {
   FaHeart,
@@ -20,8 +20,44 @@ import { TbMailCog } from 'react-icons/tb';
 const Header = () => {
   const { pathname } = useLocation();
   const [showSidebar, setShowSidebar] = useState(true);
+  const [showCategory, setShowCategory] = useState(true);
   const user = true;
   const wishList_count = 3;
+  const categories = [
+    'Shoes',
+    'T-Shirts',
+    'Watches',
+    'Doors',
+    'Accessories',
+    'Laptops',
+    'Bags',
+    'Sunglasses',
+    'Jackets',
+    'Headphones',
+    'Furniture',
+    'Smartphones',
+    'Books',
+    'Jewelry',
+    'Cameras',
+  ];
+  const categoryRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (categoryRef.current && !categoryRef.current.contains(event.target)) {
+        setShowCategory(true);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const [searchValue, setSearchValue] = useState('');
+  const [category, setCategory] = useState('');
 
   return (
     <div className='w-full bg-white'>
@@ -68,25 +104,25 @@ const Header = () => {
                   </span>
                   <ul className=' absolute invisible transition-all top-12 rounded-lg duration-200 text-white p-2 w-[100px] flex flex-col gap-3 group-hover:visible group-hover:top-6 bg-black'>
                     <li>
-                      <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-2 py-1 rounded w-full text-left'>
+                      <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-1 py-1 rounded w-full text-center'>
                         English{' '}
                       </button>
                     </li>
                     <li>
                       {' '}
-                      <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-2 py-1 rounded w-full text-left'>
+                      <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-1 py-1 rounded w-full text-center'>
                         German{' '}
                       </button>
                     </li>
                     <li>
                       {' '}
-                      <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-2 py-1 rounded w-full text-left'>
+                      <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-1 py-1 rounded w-full text-center'>
                         Spanish{' '}
                       </button>
                     </li>
                     <li>
                       {' '}
-                      <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-2 py-1 rounded w-full text-left'>
+                      <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-1 py-1 rounded w-full text-center'>
                         Chinese{' '}
                       </button>
                     </li>
@@ -252,25 +288,25 @@ const Header = () => {
                 </span>
                 <ul className=' absolute invisible transition-all top-12 rounded-lg duration-200 text-white p-2 w-[100px] flex flex-col gap-3 group-hover:visible group-hover:top-6 bg-black'>
                   <li>
-                    <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-2 py-1 rounded w-full text-left'>
+                    <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-1 py-1 rounded w-full text-center'>
                       English{' '}
                     </button>
                   </li>
                   <li>
                     {' '}
-                    <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-2 py-1 rounded w-full text-left'>
+                    <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-1 py-1 rounded w-full text-center'>
                       German{' '}
                     </button>
                   </li>
                   <li>
                     {' '}
-                    <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-2 py-1 rounded w-full text-left'>
+                    <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-1 py-1 rounded w-full text-center'>
                       Spanish{' '}
                     </button>
                   </li>
                   <li>
                     {' '}
-                    <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-2 py-1 rounded w-full text-left'>
+                    <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-1 py-1 rounded w-full text-center'>
                       Chinese{' '}
                     </button>
                   </li>
@@ -383,6 +419,113 @@ const Header = () => {
                   +(380) 973 16 97
                 </p>
                 <p className='text-sm font-bold'>Support 24/7</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className='w-[85%] lg:w-[90%] mx-auto'>
+        <div className='flex w-full flex-wrap md-lg:gap-8 items-center'>
+          <div className='w-3/12 md-lg:w-full'>
+            <div className='bg-white relative '>
+              <div
+                ref={categoryRef}
+                onClick={() => setShowCategory(!showCategory)}
+                className={`${
+                  !showCategory
+                    ? 'rounded-b-none rounded-bl-none'
+                    : 'rounded-b-lg rounded-bl-lg'
+                } h-[50px] bg-[#059473] text-white flex justify-center md-lg:justify-between md-lg:px-6 items-center gap-3 font-bold text-md cursor-pointer rounded-lg hover:bg-[#047b59] transition-all duration-300 ease-in-out`}
+              >
+                <div className='flex justify-center items-center gap-3 '>
+                  <span className=''>
+                    <FaListUl />
+                  </span>
+                  <span className=''>All Category</span>
+                </div>
+                <span className='pt-1'>
+                  <TbArrowBigDownFilled color='white' />
+                </span>
+              </div>
+              <div
+                className={`${
+                  showCategory ? 'h-0' : 'h-[400px]'
+                } overflow-x-hidden transition-all md-lg:relative duration-500 absolute z-[101] rounded-b-lg rounded-bl-lg  bg-[#059473]  w-full border-x`}
+              >
+                <ul className='py-1 text-white font-medium'>
+                  {categories.map((c, i) => {
+                    return (
+                      <li
+                        key={i}
+                        className='flex justify-center items-center gap-2 px-[24px] py-[6px]'
+                      >
+                        <Link className='text-sm block focus:bg-[#caddff] focus:outline-none focus:text-[#059473]  hover:text-[#059473]    hover:bg-[#caddff] px-2 py-1 rounded w-full text-center '>
+                          {c}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div className='w-9/12 pl-8 md-lg:pl-0 md-lg:w-full'>
+            <div className='flex flex-wrap w-full justify-between items-center md-lg:gap-6'>
+              <div className='w-8/12 md-lg:w-full'>
+                <div className=' rounded-lg flex border h-[50px] items-center relative gap-6 px-2'>
+                  <div className='relative after:absolute after:h-[25px] after:w-[1px] after:bg-[#afafaf] after:-right-[15px] md:hidden '>
+                    <select
+                      onChange={(e) => setCategory(e.target.value)}
+                      name='category'
+                      id='category'
+                      className='pl-2 w-[150px] text-[#059473]  font-semibold bg-transparent px-2 h-full outline-0 border-none cursor-pointer transition duration-300'
+                    >
+                      <option value=''>Select Category</option>
+                      {categories.map((c, i) => (
+                        <option value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <input
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    type='text'
+                    name='search'
+                    id='search'
+                    placeholder='Search for products...'
+                    className='w-full md:w-[300px] lg:w-[400px] p-2 border-transparent rounded-md focus:ring-[#059473] focus:outline-none transition duration-300'
+                  />
+                  <button
+                    type='button'
+                    className='bg-[#059473] hover:bg-[#047b59] right-0 absolute px-6 md:px-8 h-full font-semibold uppercase rounded-lg text-white transition-all duration-300 ease-in-out'
+                  >
+                    Search
+                  </button>
+                </div>
+              </div>
+              <div className='w-4/12 block md-lg:hidden pl-2 md-lg:w-full md-lg:pl-0'>
+                <ul className='flex flex-col justify-start items-center gap-3 text-[#1c1c1c]'>
+                  <li className='flex justify-center items-center gap-2 text-xs'>
+                    <span className='w-[24px] h-[24px] rounded-full flex bg-[#f5f5f5] justify-center items-center'>
+                      <TbMailCog size={20} />
+                    </span>
+                    <span className='text-xs font-medium text-slate-700'>
+                      support@gmail.com
+                    </span>
+                  </li>
+                </ul>
+                <div className='w-full flex justify-center ml-[-8px] gap-4 items-center'>
+                  <div className='w-[24px] h-[24px] rounded-full flex bg-[#f5f5f5] justify-center items-center'>
+                    <span className=''>
+                      <BiSolidPhoneCall size={20} />
+                    </span>
+                  </div>
+                  <div className='flex justify-end flex-col '>
+                    <p className='text-xs font-medium text-slate-700'>
+                      +(380) 973 16 97
+                    </p>
+                    <p className='text-xs font-semibold'>Support 24/7</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
