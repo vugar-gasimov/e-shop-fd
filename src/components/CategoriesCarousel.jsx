@@ -49,6 +49,12 @@ const CategoriesCarousel = () => {
 
   return (
     <div className='w-[87%] mx-auto relative'>
+      <div className='w-full'>
+        <div className='text-center flex justify-center items-center flex-col text-4xl text-slate-600 font-bold relative pb-[30px]'>
+          <h2> Top Categories </h2>
+          <div className='w-[150px] h-[3px] bg-[#059473] mt-4 rounded-full'></div>
+        </div>
+      </div>
       <Carousel
         autoPlay={true}
         infinite={true}
