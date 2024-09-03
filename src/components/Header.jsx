@@ -60,7 +60,7 @@ const Header = () => {
   const [category, setCategory] = useState('');
 
   return (
-    <div className='w-full bg-white'>
+    <header className='w-full bg-white'>
       <div className='header-top bg-[#caddff] md-lg:hidden'>
         <div className='w-[85%] lg:w-[90%] mx-auto'>
           <div className='flex w-full justify-between items-center h-[50px] text-slate-500'>
@@ -81,27 +81,41 @@ const Header = () => {
             <div>
               <div className='flex justify-center items-center gap-10'>
                 <div className='flex justify-center items-center gap-4 text-black'>
-                  <a href='https://example.com'>
+                  <a
+                    href='https://example.com'
+                    className='hover:scale-105 transition-transform duration-200'
+                  >
                     <ImFacebook2 />
                   </a>
-                  <a href='https://example.com'>
+                  <a
+                    href='https://example.com'
+                    className='hover:scale-105 transition-transform duration-200'
+                  >
                     <FaSquareXTwitter size={19} />
                   </a>
-                  <a href='https://example.com'>
+                  <a
+                    href='https://example.com'
+                    className='hover:scale-105 transition-transform duration-200'
+                  >
                     <FaLinkedin size={19} />
                   </a>
-                  <a href='https://example.com'>
+                  <a
+                    href='https://example.com'
+                    className='hover:scale-105 transition-transform duration-200'
+                  >
                     <VscGithub size={19} />
                   </a>
                 </div>
-                <div className='flex group cursor-pointer text-slate-800 text-sm justify-center items-center gap-1 relative after:h-[18px] after:w-[1px] after:bg-[#afafaf] after:-right-[16px] after:absolute before:absolute before:h-[18px] before:bg-[#afafaf] before:w-[1px] before:-left-[20px]'>
-                  <img
-                    src='http://localhost:3000/images/language.png'
-                    alt='Language selection flag'
-                  />
-                  <span>
-                    <TbArrowBigDownFilled />
-                  </span>
+                <div className='flex   items-center justify-center group cursor-pointer text-slate-800 text-sm relative after:h-[18px] after:w-[1px] after:bg-[#afafaf] after:-right-[16px] after:absolute before:absolute before:h-[18px] before:bg-[#afafaf] before:w-[1px] before:-left-[20px]'>
+                  <div className='flex gap-1  items-center justify-center hover:scale-105 transition-transform duration-200'>
+                    <img
+                      src='http://localhost:3000/images/language.png'
+                      alt='Language selection flag'
+                    />
+                    <span>
+                      <TbArrowBigDownFilled />
+                    </span>
+                  </div>
                   <ul className=' absolute invisible transition-all top-12 rounded-lg duration-200 text-white p-2 w-[100px] flex flex-col gap-3 group-hover:visible group-hover:top-6 bg-black'>
                     <li>
                       <button className='focus:bg-indigo-600 focus:outline-none hover:bg-indigo-500 px-1 py-1 rounded w-full text-center'>
@@ -131,7 +145,7 @@ const Header = () => {
                 {user ? (
                   <Link
                     to='/dashboard'
-                    className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black'
+                    className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black  hover:scale-105 transition-transform duration-200'
                   >
                     <span>
                       <PiUserCircleFill size={20} />
@@ -141,7 +155,7 @@ const Header = () => {
                 ) : (
                   <Link
                     to='/login'
-                    className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black'
+                    className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black hover:scale-105 transition-transform duration-200'
                   >
                     <span>
                       <RiLockPasswordFill size={18} />
@@ -163,6 +177,7 @@ const Header = () => {
                   <img
                     src='http://localhost:3000/images/logo.png'
                     alt='Website logo'
+                    className='hover:scale-105 transition-transform duration-200'
                   />
                 </Link>
 
@@ -236,15 +251,29 @@ const Header = () => {
                 <div className='flex md-lg:hidden justify-center items-center gap-5'>
                   <div className='flex justify-center gap-5'>
                     <div className='relative flex justify-center items-center cursor-pointer w-[35px] h-[35px] rounded-full bg-[#e2e2e2]'>
-                      <button type='button' className='text-xl text-green-500'>
+                      <button
+                        type='button'
+                        className=' text-xl text-green-500 hover:scale-105 
+                      w-[38px] h-[38px] hover:bg-[#059473]
+                      hover:text-white flex justify-center items-center bg-white
+                      rounded-full transition-all duration-500
+                      hover:rotate-[720deg]'
+                      >
                         <FaHeart />
                       </button>
                       <div className='w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px]'>
                         {wishList_count}
                       </div>
                     </div>
-                    <div className='relative flex justify-center items-center cursor-pointer w-[35px] h-[35px] rounded-full bg-[#e2e2e2]'>
-                      <button type='button' className='text-xl text-green-500'>
+                    <div className='relative flex justify-center items-center cursor-pointer w-[35px] h-[35px] rounded-full bg-[#e2e2e2]  '>
+                      <button
+                        type='button'
+                        className='text-xl text-green-500 hover:scale-105 
+                      w-[38px] h-[38px] hover:bg-[#059473]
+                      hover:text-white flex justify-center items-center bg-white
+                      rounded-full transition-all duration-500
+                      hover:rotate-[720deg]'
+                      >
                         <TiShoppingCart size={24} />
                       </button>
                       <div className='w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px]'>
@@ -275,6 +304,7 @@ const Header = () => {
               <img
                 src='http://localhost:3000/images/logo.png'
                 alt='Website logo'
+                className='hover:scale-105 transition-transform duration-200'
               />
             </Link>
             <div className='flex justify-start items-center gap-10'>
@@ -531,7 +561,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 

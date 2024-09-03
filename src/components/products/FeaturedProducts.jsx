@@ -24,7 +24,7 @@ const FeaturedProducts = () => {
               <img
                 src={`http://localhost:3000/images/products/${i + 1}.webp`}
                 alt={`Product ${i + 1} img`}
-                className=' w-full object-cover h-[240px]'
+                className=' w-full object-contain h-[240px]'
               />
               <ul className='flex transition-all duration-700 -bottom-10 justify-center items-center gap-2 absolute w-full group-hover:bottom-3'>
                 <li className='w-[38px] h-[38px] cursor-pointer bg-white flex justify-center items-center rounded-full hover:bg-[#059473] hover:text-white hover:rotate-[720deg] transition-all'>
