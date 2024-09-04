@@ -8,7 +8,7 @@ import { FaLinkedin } from 'react-icons/fa';
 const Footer = () => {
   return (
     <footer className='bg-[#f3f6fa]'>
-      <div className='w-[85%] flex flex-wrap mx-auto border-b py-16 md-lg:pb-10 sm:pb-6'>
+      <section className='w-[85%] flex flex-wrap mx-auto border-b py-16 md-lg:pb-10 sm:pb-6'>
         <div className='w-3/12 lg:w-4/12 sm:w-full'>
           <div className='flex flex-col gap-3'>
             {' '}
@@ -153,10 +153,10 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-      </div>
-      <div className='w-[90%] flex justify-center flex-wrap items-center text-slate-600 mx-auto py-5 text-center'>
+      </section>
+      <section className='w-[90%] flex justify-center flex-wrap items-center text-slate-600 mx-auto py-5 text-center'>
         <p>Copyright © 2024 Easy Shop Ecommerce. All rights reserved.</p>
-      </div>
+      </section>
     </footer>
   );
 };

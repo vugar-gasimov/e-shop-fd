@@ -61,7 +61,7 @@ const Header = () => {
 
   return (
     <header className='w-full bg-white'>
-      <div className='header-top bg-[#caddff] md-lg:hidden'>
+      <section className='header-top bg-[#caddff] md-lg:hidden'>
         <div className='w-[85%] lg:w-[90%] mx-auto'>
           <div className='flex w-full justify-between items-center h-[50px] text-slate-500'>
             <ul className='flex justify-start items-center gap-8 font-semibold text-black'>
@@ -167,8 +167,8 @@ const Header = () => {
             </div>
           </div>
         </div>
-      </div>
-      <div className='w-full'>
+      </section>
+      <section className='w-full'>
         <div className='w-[85%] lg:w-[90%] mx-auto'>
           <div className='h-[80px] md-lg:h-[100px] flex justify-between items-center flex-wrap'>
             <div className='md-lg:w-full w-3/12 md-lg:pt-4'>
@@ -196,6 +196,7 @@ const Header = () => {
                 <ul className='flex justify-start items-start gap-8 text-sm font-bold uppercase md-lg:hidden'>
                   <li>
                     <Link
+                      to='/'
                       className={`p-2 block ${
                         pathname === '/' ? 'text-[#059473]' : 'text-slate-600'
                       }`}
@@ -205,8 +206,9 @@ const Header = () => {
                   </li>
                   <li>
                     <Link
+                      to='/shops'
                       className={`p-2 block ${
-                        pathname === '/shop'
+                        pathname === '/shops'
                           ? 'text-[#059473]'
                           : 'text-slate-600'
                       }`}
@@ -286,7 +288,7 @@ const Header = () => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
       <div className='hidden md-lg:block'>
         <div
           onClick={() => setShowSidebar(true)}
@@ -294,8 +296,8 @@ const Header = () => {
             showSidebar ? 'invisible' : 'visible'
           } hidden md-lg:block w-screen h-screen bg-[rgba(0,0,0,0.5)] top-0 left-0 z-20`}
         ></div>
-        <div
-          className={`w-[300px] z-[100] transition-all duration-200 fixed ${
+        <section
+          className={`w-[300px] z-[1001] transition-all duration-200 fixed ${
             showSidebar ? '-left-[300px]' : 'left-0 top-0'
           } overflow-y-auto bg-white h-screen py-6 px-8`}
         >
@@ -367,6 +369,7 @@ const Header = () => {
             <ul className='flex flex-col justify-start items-center gap-4 text-sm font-bold uppercase '>
               <li>
                 <Link
+                  to='/'
                   className={`py-2 block ${
                     pathname === '/' ? 'text-[#059473]' : 'text-slate-600'
                   }`}
@@ -376,8 +379,9 @@ const Header = () => {
               </li>
               <li>
                 <Link
+                  to='/shops'
                   className={`py-2 block ${
-                    pathname === '/shop' ? 'text-[#059473]' : 'text-slate-600'
+                    pathname === '/shops' ? 'text-[#059473]' : 'text-slate-600'
                   }`}
                 >
                   Shop
@@ -452,9 +456,9 @@ const Header = () => {
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </div>
-      <div className='w-[85%] lg:w-[90%] mx-auto'>
+      <section className='w-[85%] lg:w-[90%] mx-auto'>
         <div className='flex w-full flex-wrap md-lg:gap-8 items-center'>
           <div className='w-3/12 md-lg:w-full'>
             <div className='bg-white relative '>
@@ -560,7 +564,7 @@ const Header = () => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </header>
   );
 };

@@ -48,7 +48,7 @@ const CategoriesCarousel = () => {
   };
 
   return (
-    <div className='w-[87%] mx-auto relative'>
+    <section className='w-[87%] mx-auto relative'>
       <div className='w-full'>
         <div className='text-center flex justify-center items-center flex-col text-4xl text-slate-600 font-bold relative pb-[30px]'>
           <h2> Top Categories </h2>
@@ -78,7 +78,7 @@ const CategoriesCarousel = () => {
           </Link>
         ))}
       </Carousel>
-    </div>
+    </section>
   );
 };
 
