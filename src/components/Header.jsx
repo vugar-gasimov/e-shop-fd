@@ -10,7 +10,7 @@ import { ImFacebook2 } from 'react-icons/im';
 import { FaSquareXTwitter } from 'react-icons/fa6';
 import { VscGithub } from 'react-icons/vsc';
 import { TbArrowBigDownFilled } from 'react-icons/tb';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { PiUserCircleFill } from 'react-icons/pi';
 import { RiLockPasswordFill } from 'react-icons/ri';
 import { TiShoppingCart } from 'react-icons/ti';
@@ -19,6 +19,7 @@ import { TbMailCog } from 'react-icons/tb';
 
 const Header = () => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const [showSidebar, setShowSidebar] = useState(true);
   const [showCategory, setShowCategory] = useState(true);
   const user = true;
@@ -58,7 +59,9 @@ const Header = () => {
 
   const [searchValue, setSearchValue] = useState('');
   const [category, setCategory] = useState('');
-
+  const redirect = () => {
+    navigate('/carts');
+  };
   return (
     <header className='w-full bg-white'>
       <section className='header-top bg-[#caddff] md-lg:hidden'>
@@ -269,6 +272,7 @@ const Header = () => {
                     </div>
                     <div className='relative flex justify-center items-center cursor-pointer w-[35px] h-[35px] rounded-full bg-[#e2e2e2]  '>
                       <button
+                        onClick={redirect}
                         type='button'
                         className='text-xl text-green-500 hover:scale-105 
                       w-[38px] h-[38px] hover:bg-[#059473]
@@ -389,6 +393,7 @@ const Header = () => {
               </li>
               <li>
                 <Link
+                  to='/carts'
                   className={`py-2 block ${
                     pathname === '/blog' ? 'text-[#059473]' : 'text-slate-600'
                   }`}

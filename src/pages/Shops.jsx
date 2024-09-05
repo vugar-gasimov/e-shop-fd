@@ -13,6 +13,7 @@ import Products from './../components/products/Products';
 import { IoGrid } from 'react-icons/io5';
 import { PiListBold } from 'react-icons/pi';
 import ShopProducts from '../components/products/ShopProducts';
+import Pagination from '../components/Pagination';
 
 const FilterButton = ({ filter, setFilter }) => (
   <button
@@ -58,6 +59,9 @@ const Shops = () => {
   const [rating, setRating] = useState('');
   const [style, setStyle] = useState('grid');
 
+  const [perPage, setPerPage] = useState(1);
+  const [pageNumber, setPageNumber] = useState(1);
+
   const categories = [
     'Mobiles',
     'Laptops',
@@ -70,7 +74,7 @@ const Shops = () => {
   ];
 
   return (
-    <div>
+    <>
       <Header />
       <main>
         <section className='bg-[url("http://localhost:3000/images/banner/shop.png")] h-[220px] mt-6 bg-cover bg-no-repeat relative bg-left'>
@@ -95,7 +99,7 @@ const Shops = () => {
               <FilterButton filter={filter} setFilter={setFilter} />
             </div>
             <div className='w-full flex flex-wrap'>
-              <div
+              <section
                 className={`w-3/12 md-lg:w-4/12 md:w-full pr-8 transition-all duration-500 ease-in-out ${
                   filter
                     ? 'md:max-h-0 md:opacity-0 md:overflow-hidden md:mb-6'
@@ -142,7 +146,7 @@ const Shops = () => {
                     renderThumb={({ props }) => (
                       <div
                         {...props}
-                        className='w-[15px] h-[15px] bg-[#059473] rounded-full'
+                        className='w-[15px] h-[15px]   rounded-full'
                       />
                     )}
                   />
@@ -157,10 +161,10 @@ const Shops = () => {
                 <div className='py-5 flex flex-col gap-4 md:hidden'>
                   <Products title='New Arrivals' />
                 </div>
-              </div>
+              </section>
               <div className='w-9/12 md-lg:w-8/12 md:w-full'>
                 <div className='pl-8 md:pl-0'>
-                  <div className='py-4 bg-white mb-10 px-3 rounded-md flex justify-between items-start border'>
+                  <section className='py-4 bg-white mb-10 px-3 rounded-md flex justify-between items-start border'>
                     <h4 className='text-lg font-medium text-slate-600 p-1'>
                       14 Products
                     </h4>
@@ -198,10 +202,19 @@ const Shops = () => {
                         </button>
                       </div>
                     </div>
-                  </div>
-                  <div className='pb-8'>
+                  </section>
+                  <section className='pb-8'>
                     <ShopProducts styles={style} />
-                  </div>
+                  </section>
+                  <section className=''>
+                    <Pagination
+                      pageNumber={pageNumber}
+                      setPageNumber={setPageNumber}
+                      totalItem={10}
+                      perPage={perPage}
+                      showItem={Math.floor(10 / 3)}
+                    />
+                  </section>
                 </div>
               </div>
             </div>
@@ -209,7 +222,7 @@ const Shops = () => {
         </section>
       </main>
       <Footer />
-    </div>
+    </>
   );
 };
 
