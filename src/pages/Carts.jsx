@@ -46,13 +46,13 @@ const Carts = () => {
                 <div className='w-[67%] md-lg:w-full'>
                   <div className='pr-3 md-lg:pr-0'>
                     <div className='flex flex-col gap-3'>
-                      <div className='bg-white p-4'>
+                      <div className='bg-white p-4 shadow-md rounded-md'>
                         <h3 className='text-md text-green-600 font-semibold'>
                           Products in stock: {cart_products.length}
                         </h3>
                       </div>
                       {cart_products.map((p, i) => (
-                        <div className='flex bg-white p-4 flex-col gap-2'>
+                        <div className='flex bg-white p-4 flex-col gap-2 shadow-md rounded-md'>
                           <div className='flex justify-center items-center'>
                             <h3 className='text-md text-slate-600 font-bold'>
                               Easy Shop
@@ -92,11 +92,11 @@ const Carts = () => {
                                       type='button'
                                       className='px-3 cursor-pointer'
                                     >
-                                      <FaMinus />
+                                      <FaMinus size={15} />
                                     </button>
                                     <p className='px-3 font-bold'>2</p>
                                     <button type='button' className='px-3'>
-                                      <FaPlus />
+                                      <FaPlus size={15} />
                                     </button>
                                   </div>
                                   <button
@@ -112,17 +112,17 @@ const Carts = () => {
                         </div>
                       ))}
                       {outOfStockProducts.length > 0 && (
-                        <div className='flex flex-col gap-3'>
-                          <div className='bg-white p-4'>
+                        <div className='flex flex-col gap-3 '>
+                          <div className='bg-white p-4 shadow-md rounded-md'>
                             <h3 className='text-md text-red-600 font-semibold'>
                               Products out of stock: {cart_products.length}
                             </h3>
                           </div>
-                          <div className='bg-white p-4  '>
+                          <div className='bg-white p-4 shadow-md rounded-md '>
                             {[1, 2].map((p, i, arr) => (
                               <div
                                 key={i}
-                                className={`w-full flex flex-wrap ${
+                                className={`w-full flex flex-wrap  ${
                                   i < arr.length - 1 ? 'mb-4' : ''
                                 }`}
                               >
@@ -158,11 +158,11 @@ const Carts = () => {
                                         type='button'
                                         className='px-3 cursor-pointer'
                                       >
-                                        <FaMinus />
+                                        <FaMinus size={15} />
                                       </button>
                                       <p className='px-3 font-bold'>2</p>
                                       <button type='button' className='px-3'>
-                                        <FaPlus />
+                                        <FaPlus size={15} />
                                       </button>
                                     </div>
                                     <button
@@ -184,7 +184,7 @@ const Carts = () => {
                 <div className='w-[33%] md-lg:w-full'>
                   <div className='pl-3 md-lg:pl-0 md-lg:mt-5'>
                     {cart_products.length > 0 && (
-                      <div className='bg-white p-3 text-slate-600 flex flex-col gap-3'>
+                      <div className='bg-white p-3 text-slate-600 flex flex-col gap-3 shadow-md rounded-md'>
                         <h3 className='text-xl font-bold'>Order List</h3>
                         <div className='flex justify-between items-center'>
                           <span>2 items: </span>
