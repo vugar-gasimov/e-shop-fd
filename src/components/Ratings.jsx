@@ -7,26 +7,35 @@ const Ratings = ({ ratings }) => {
 
     if (ratings >= starValue) {
       return (
-        <span key={index}>
+        <span
+          key={index}
+          className='text-goldenrod transition-transform transform hover:scale-125 hover:text-green-500 duration-300 ease-in-out'
+        >
           <FaStar color='goldenrod' />
         </span>
       );
     } else if (ratings >= starValue - 0.5) {
       return (
-        <span key={index}>
+        <span
+          key={index}
+          className='text-goldenrod transition-transform transform hover:scale-125 hover:text-green-500 duration-300 ease-in-out'
+        >
           <FaStarHalfAlt color='goldenrod' />
         </span>
       );
     } else {
       return (
-        <span key={index}>
+        <span
+          key={index}
+          className='text-goldenrod transition-transform transform hover:scale-125 hover:text-green-500 duration-300 ease-in-out'
+        >
           <FaRegStar color='goldenrod' />
         </span>
       );
     }
   });
 
-  return <>{stars}</>;
+  return <div className='flex space-x-1'>{stars}</div>;
 };
 
 export default Ratings;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaEye, FaHeart, FaShoppingCart } from 'react-icons/fa';
 import Ratings from '../Ratings';
+import { Link } from 'react-router-dom';
 
 const FeaturedProducts = () => {
   return (
@@ -31,7 +32,9 @@ const FeaturedProducts = () => {
                   <FaHeart />
                 </li>
                 <li className='w-[38px] h-[38px] cursor-pointer bg-white flex justify-center items-center rounded-full hover:bg-[#059473] hover:text-white hover:rotate-[720deg] transition-all'>
-                  <FaEye />
+                  <Link to='/product/details/new'>
+                    <FaEye />
+                  </Link>
                 </li>
                 <li className='w-[38px] h-[38px] cursor-pointer bg-white flex justify-center items-center rounded-full hover:bg-[#059473] hover:text-white hover:rotate-[720deg] transition-all'>
                   <FaShoppingCart />

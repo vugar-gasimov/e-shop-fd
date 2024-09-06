@@ -121,7 +121,7 @@ const Footer = () => {
               <li className='hover:scale-105 transition-transform duration-200 '>
                 <a
                   href='example.com'
-                  className='w-[38px] h-[38px] hover:bg-[#059473] hover:text-white flex justify-center items-center bg-white rounded-full transition-all duration-500 hover:rotate-[720deg]'
+                  className='w-[38px] h-[38px] hover:bg-[#059473] hover:text-white flex justify-center items-center bg-white rounded-full transition-all duration-400 hover:rotate-[720deg]'
                 >
                   <ImFacebook2 />
                 </a>
@@ -129,7 +129,7 @@ const Footer = () => {
               <li className='hover:scale-105 transition-transform duration-200'>
                 <a
                   href='example.com'
-                  className='w-[38px] h-[38px] hover:bg-[#059473] hover:text-white flex justify-center items-center bg-white rounded-full transition-all duration-500 hover:rotate-[720deg]'
+                  className='w-[38px] h-[38px] hover:bg-[#059473] hover:text-white flex justify-center items-center bg-white rounded-full transition-all duration-400 hover:rotate-[720deg]'
                 >
                   <FaSquareXTwitter size={19} />
                 </a>
@@ -137,7 +137,7 @@ const Footer = () => {
               <li className='hover:scale-105 transition-transform duration-200'>
                 <a
                   href='example.com'
-                  className='w-[38px] h-[38px] hover:bg-[#059473] hover:text-white flex justify-center items-center bg-white rounded-full transition-all duration-500 hover:rotate-[720deg]'
+                  className='w-[38px] h-[38px] hover:bg-[#059473] hover:text-white flex justify-center items-center bg-white rounded-full transition-all duration-400 hover:rotate-[720deg]'
                 >
                   <FaLinkedin size={19} />
                 </a>
@@ -145,7 +145,7 @@ const Footer = () => {
               <li className='hover:scale-105 transition-transform duration-200'>
                 <a
                   href='example.com'
-                  className='w-[38px] h-[38px] hover:bg-[#059473] hover:text-white flex justify-center items-center bg-white rounded-full transition-all duration-500 hover:rotate-[720deg]'
+                  className='w-[38px] h-[38px] hover:bg-[#059473] hover:text-white flex justify-center items-center bg-white rounded-full transition-all duration-400 hover:rotate-[720deg]'
                 >
                   <VscGithub size={19} />
                 </a>
