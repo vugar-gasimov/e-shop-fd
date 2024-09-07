@@ -9,7 +9,7 @@ const Ratings = ({ ratings }) => {
       return (
         <span
           key={index}
-          className='text-goldenrod transition-transform transform hover:scale-125 hover:text-green-500 duration-300 ease-in-out'
+          className='text-goldenrod transition-transform transform hover:scale-125 hover:text-green-500 duration-300 ease-in-out cursor-pointer'
         >
           <FaStar color='goldenrod' />
         </span>
@@ -18,7 +18,7 @@ const Ratings = ({ ratings }) => {
       return (
         <span
           key={index}
-          className='text-goldenrod transition-transform transform hover:scale-125 hover:text-green-500 duration-300 ease-in-out'
+          className='text-goldenrod transition-transform transform hover:scale-125 hover:text-green-500 duration-300 ease-in-out cursor-pointer'
         >
           <FaStarHalfAlt color='goldenrod' />
         </span>
@@ -27,7 +27,7 @@ const Ratings = ({ ratings }) => {
       return (
         <span
           key={index}
-          className='text-goldenrod transition-transform transform hover:scale-125 hover:text-green-500 duration-300 ease-in-out'
+          className='text-goldenrod transition-transform transform hover:scale-125 hover:text-green-500 duration-300 ease-in-out cursor-pointer'
         >
           <FaRegStar color='goldenrod' />
         </span>

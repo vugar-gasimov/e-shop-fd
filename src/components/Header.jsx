@@ -270,9 +270,11 @@ const Header = () => {
                         {wishList_count}
                       </div>
                     </div>
-                    <div className='relative flex justify-center items-center cursor-pointer w-[35px] h-[35px] rounded-full bg-[#e2e2e2]  '>
+                    <div
+                      onClick={redirect}
+                      className='relative flex justify-center items-center cursor-pointer w-[35px] h-[35px] rounded-full bg-[#e2e2e2]  '
+                    >
                       <button
-                        onClick={redirect}
                         type='button'
                         className='text-xl text-green-500 hover:scale-105 
                       w-[38px] h-[38px] hover:bg-[#059473]
