@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Banner from '../components/Banner';
 import CategoriesCarousel from '../components/CategoriesCarousel';
 import FeaturedProducts from '../components/products/FeaturedProducts';
 import Products from './../components/products/Products';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCategories } from '../store/reducers/homeReducer';
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const { categories } = useSelector((state) => state.home || {});
+
+  useEffect(() => {
+    dispatch(getCategories());
+  }, [dispatch]);
+
   return (
     <div className='w-full'>
       <Header />
