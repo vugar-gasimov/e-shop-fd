@@ -17,30 +17,14 @@ import { TiShoppingCart } from 'react-icons/ti';
 import { BiSolidPhoneCall } from 'react-icons/bi';
 import { TbMailCog } from 'react-icons/tb';
 
-const Header = () => {
+const Header = ({ categories }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [showSidebar, setShowSidebar] = useState(true);
   const [showCategory, setShowCategory] = useState(true);
   const user = true;
   const wishList_count = 3;
-  const categories = [
-    'Shoes',
-    'T-Shirts',
-    'Watches',
-    'Doors',
-    'Accessories',
-    'Laptops',
-    'Bags',
-    'Sunglasses',
-    'Jackets',
-    'Headphones',
-    'Furniture',
-    'Smartphones',
-    'Books',
-    'Jewelry',
-    'Cameras',
-  ];
+
   const categoryRef = useRef(null);
 
   useEffect(() => {
@@ -494,18 +478,27 @@ const Header = () => {
                 } overflow-x-hidden transition-all md-lg:relative duration-500 absolute z-[101] rounded-b-lg rounded-bl-lg  bg-[#059473]  w-full border-x`}
               >
                 <ul className='py-1 text-white font-medium'>
-                  {categories.map((c, i) => {
-                    return (
-                      <li
-                        key={i}
-                        className='flex justify-center items-center gap-2 px-[24px] py-[6px]'
-                      >
-                        <Link className='text-sm block focus:bg-[#caddff] focus:outline-none focus:text-[#059473]  hover:text-[#059473]    hover:bg-[#caddff] px-2 py-1 rounded w-full text-center '>
-                          {c}
-                        </Link>
-                      </li>
-                    );
-                  })}
+                  {categories && categories.length > 0 ? (
+                    categories.map((category) => {
+                      return (
+                        <li
+                          key={category._id}
+                          className='flex justify-center items-center gap-2 px-[24px] py-[6px]'
+                        >
+                          <img
+                            src={category.image}
+                            alt={category.name}
+                            className='w-[25px] h-[25px] rounded-full overflow-hidden object-contain'
+                          />
+                          <Link className='text-sm block focus:bg-[#caddff] focus:outline-none focus:text-[#059473]  hover:text-[#059473]    hover:bg-[#caddff] px-2 py-1 rounded w-full text-center '>
+                            {category.name}
+                          </Link>
+                        </li>
+                      );
+                    })
+                  ) : (
+                    <li>No categories available</li>
+                  )}
                 </ul>
               </div>
             </div>
@@ -522,9 +515,15 @@ const Header = () => {
                       className='pl-2 w-[150px] text-[#059473]  font-semibold bg-transparent px-2 h-full outline-0 border-none cursor-pointer transition duration-300'
                     >
                       <option value=''>Select Category</option>
-                      {categories.map((c, i) => (
-                        <option value={c}>{c}</option>
-                      ))}
+                      {categories && categories.length > 0 ? (
+                        categories.map((category) => (
+                          <option key={category._id} value={category.name}>
+                            {category.name}
+                          </option>
+                        ))
+                      ) : (
+                        <option>No categories available</option>
+                      )}
                     </select>
                   </div>
                   <input

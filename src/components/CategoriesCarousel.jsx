@@ -3,18 +3,7 @@ import Carousel from 'react-multi-carousel';
 import { Link } from 'react-router-dom';
 import 'react-multi-carousel/lib/styles.css';
 
-const CategoriesCarousel = () => {
-  const categories = [
-    'Mobiles',
-    'Laptops',
-    'Speakers',
-    'Top wear',
-    'Foot wear',
-    'Watches',
-    'Home Decor',
-    'Smart Watches',
-  ];
-
+const CategoriesCarousel = ({ categories }) => {
   const responsive = {
     LargeDesktop: {
       breakpoint: { max: 4000, min: 3000 },
@@ -62,21 +51,30 @@ const CategoriesCarousel = () => {
         responsive={responsive}
         transitionDuration={500}
       >
-        {categories.map((c, i) => (
-          <Link key={i} to='#' className='h-[185px] border rounded-md block'>
-            <div className='w-full h-full relative p-3'>
-              <img
-                src={`http://localhost:3000/images/products/${i + 1}.webp`}
-                alt={`Category ${i + 1} img`}
-              />
-              <div className='absolute bottom-6 w-full mx-auto font-bold left-0 flex justify-center items-center'>
-                <span className='py-[2px] px-6 bg-[#0000005c] text-white rounded-xl'>
-                  {c}
-                </span>
+        {categories && categories.length > 0 ? (
+          categories.map((category) => (
+            <Link
+              key={category._id}
+              to='#'
+              className='h-[185px] border rounded-md block'
+            >
+              <div className='w-full h-full relative p-3'>
+                <img
+                  src={category.image}
+                  alt={category.name}
+                  className=' object-contain w-full h-full rounded-md'
+                />
+                <div className='absolute bottom-6 w-full mx-auto font-bold left-0 flex justify-center items-center'>
+                  <span className='py-[2px] px-6 bg-[#0000005c] text-white rounded-xl'>
+                    {category.name}
+                  </span>
+                </div>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))
+        ) : (
+          <p>No categories available</p>
+        )}
       </Carousel>
     </section>
   );

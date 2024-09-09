@@ -4,12 +4,7 @@ import { Link } from 'react-router-dom';
 import 'react-multi-carousel/lib/styles.css';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
-const Products = ({ title }) => {
-  const products = [
-    [1, 2, 3],
-    [4, 5, 6],
-  ];
-
+const Products = ({ title, products }) => {
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 3000 },
@@ -67,23 +62,23 @@ const Products = ({ title }) => {
         renderButtonGroupOutside={true}
         customButtonGroup={<ButtonGroup />}
       >
-        {products.map((p, i) => {
+        {products.map((p) => {
           return (
-            <div key={i} className='flex flex-col justify-start gap-2'>
+            <div key={p._id} className='flex flex-col justify-start gap-2'>
               {p.map((pl, j) => (
                 <Link
                   to='#'
-                  key={j}
+                  key={pl._id}
                   className='flex justify-start items-start hover:scale-95 transition-transform duration-200'
                 >
                   <img
-                    src={`http://localhost:3000/images/products/${pl}.webp`}
-                    alt={`Product img ${pl}`}
+                    src={pl.images[0]}
+                    alt={pl.name}
                     className='w-[110px] h-[110px] object-contain'
                   />
                   <div className='px-3 flex justify-start items-start gap-1 flex-col text-slate-600'>
-                    <h3 className='font-semibold text-lg'>Product Name</h3>
-                    <p className='text-base font-bold '>$399</p>
+                    <h3 className='font-semibold text-lg'>{pl.name}</h3>
+                    <p className='text-base font-bold '>${pl.price}</p>
                   </div>
                 </Link>
               ))}

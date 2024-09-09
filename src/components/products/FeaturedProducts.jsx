@@ -3,7 +3,7 @@ import { FaEye, FaHeart, FaShoppingCart } from 'react-icons/fa';
 import Ratings from '../Ratings';
 import { Link } from 'react-router-dom';
 
-const FeaturedProducts = () => {
+const FeaturedProducts = ({ products }) => {
   return (
     <div className='w-[85%] flex flex-wrap mx-auto'>
       <div className='w-full'>
@@ -13,18 +13,24 @@ const FeaturedProducts = () => {
         </div>
       </div>
       <div className='w-full grid grid-cols-4 md-lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6'>
-        {[1, 2, 3, 4, 5, 6].map((p, i) => (
+        {products.map((p, i) => (
           <div
             key={i}
             className='border group transition-all duration-500 hover:shadow-md rounded-lg overflow-hidden'
           >
             <div className='relative overflow-hidden'>
-              <div className='flex justify-center items-center absolute text-white w-[38px] h-[38px] rounded-full bg-red-500 font-semibold text-xs left-2 top-2'>
-                8%
-              </div>
+              {p.discount ? (
+                <div className='flex justify-center items-center absolute text-white w-[38px] h-[38px] rounded-full bg-red-500 font-semibold text-xs left-2 top-2'>
+                  {' '}
+                  {p.discount}%{' '}
+                </div>
+              ) : (
+                ''
+              )}
+
               <img
-                src={`http://localhost:3000/images/products/${i + 1}.webp`}
-                alt={`Product ${i + 1} img`}
+                src={p.images[0]}
+                alt={p.name}
                 className=' w-full object-contain h-[240px]'
               />
               <ul className='flex transition-all duration-700 -bottom-10 justify-center items-center gap-2 absolute w-full group-hover:bottom-3'>
@@ -44,12 +50,14 @@ const FeaturedProducts = () => {
 
             <div className='py-3 px-2 text-slate-700'>
               <h3 className='font-bold text-lg text-center text-slate-800 mb-2'>
-                Product Name
+                {p.name}
               </h3>
               <div className='flex justify-center items-center gap-4'>
-                <p className='text-base font-semibold text-green-600'>$499</p>
+                <p className='text-base font-semibold text-green-600'>
+                  ${p.price}
+                </p>
                 <div className='flex justify-center items-center'>
-                  <Ratings ratings={3.5} />
+                  <Ratings ratings={p.rating} />
                 </div>
               </div>
             </div>
