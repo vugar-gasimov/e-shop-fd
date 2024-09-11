@@ -6,29 +6,23 @@ import CategoriesCarousel from '../components/CategoriesCarousel';
 import FeaturedProducts from '../components/products/FeaturedProducts';
 import Products from './../components/products/Products';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCategories, getProducts } from '../store/reducers/homeReducer';
+import { getProducts } from '../store/reducers/homeReducer';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const {
-    categories,
-    products,
-    latest_products,
-    topRated_products,
-    discounted_products,
-  } = useSelector((state) => state.home || {});
+  const { products, latest_products, topRated_products, discounted_products } =
+    useSelector((state) => state.home || {});
 
   useEffect(() => {
-    dispatch(getCategories());
     dispatch(getProducts());
   }, [dispatch]);
 
   return (
     <div className='w-full'>
-      <Header categories={categories} />
+      <Header />
       <main>
         <Banner />
-        <CategoriesCarousel categories={categories} />
+        <CategoriesCarousel />
         <section className='py-[45px]'>
           <FeaturedProducts products={products} />
         </section>

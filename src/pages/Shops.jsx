@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
@@ -14,6 +14,8 @@ import { IoGrid } from 'react-icons/io5';
 import { PiListBold } from 'react-icons/pi';
 import ShopProducts from '../components/products/ShopProducts';
 import Pagination from '../components/Pagination';
+import { useSelector, useDispatch } from 'react-redux';
+import { product_price_range } from '../store/reducers/homeReducer';
 
 const FilterButton = ({ filter, setFilter }) => (
   <button
@@ -54,24 +56,31 @@ const RatingFilter = ({ setRating }) => (
 );
 
 const Shops = () => {
+  const dispatch = useDispatch();
+  const { products, categories, priceRange, latest_products } = useSelector(
+    (state) => state.home || {}
+  );
+
+  useEffect(() => {
+    dispatch(product_price_range());
+  }, [dispatch]);
+
+  useEffect(() => {
+    setState({
+      values: [priceRange.low, priceRange.high],
+    });
+  }, [priceRange]);
+
   const [filter, setFilter] = useState(true);
-  const [state, setState] = useState({ values: [10, 10000] });
+
+  const [state, setState] = useState({
+    values: [priceRange.low, priceRange.high],
+  });
   const [rating, setRating] = useState('');
   const [style, setStyle] = useState('grid');
 
   const [perPage, setPerPage] = useState(1);
   const [pageNumber, setPageNumber] = useState(1);
-
-  const categories = [
-    'Mobiles',
-    'Laptops',
-    'Speakers',
-    'Top wear',
-    'Foot wear',
-    'Watches',
-    'Home Decor',
-    'Smart Watches',
-  ];
 
   return (
     <>
@@ -112,15 +121,15 @@ const Shops = () => {
                 <div className='py-2'>
                   {categories.map((c) => (
                     <div
-                      key={c}
+                      key={c._id}
                       className='flex justify-start items-center gap-2 py-2'
                     >
-                      <input type='checkbox' name='category' id={c} />
+                      <input type='checkbox' name='category' id={c.name} />
                       <label
-                        htmlFor={c}
+                        htmlFor={c.name}
                         className='text-slate-600 block cursor-pointer'
                       >
-                        {c}
+                        {c.name}
                       </label>
                     </div>
                   ))}
@@ -131,8 +140,8 @@ const Shops = () => {
                   </h3>
                   <Range
                     step={5}
-                    min={10}
-                    max={10000}
+                    min={priceRange.low}
+                    max={priceRange.high}
                     values={state.values}
                     onChange={(values) => setState({ values })}
                     renderTrack={({ props, children }) => (
@@ -159,7 +168,7 @@ const Shops = () => {
                 </div>
                 <RatingFilter setRating={setRating} />
                 <div className='py-5 flex flex-col gap-4 md:hidden'>
-                  <Products title='New Arrivals' />
+                  <Products title='New Arrivals' products={latest_products} />
                 </div>
               </section>
               <div className='w-9/12 md-lg:w-8/12 md:w-full'>

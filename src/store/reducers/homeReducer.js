@@ -19,7 +19,6 @@ export const getProducts = createAsyncThunk(
   async (_, { fulfillWithValue }) => {
     try {
       const { data } = await api.get('/home/get-products');
-      console.log(data);
 
       return fulfillWithValue(data);
     } catch (error) {
@@ -27,6 +26,20 @@ export const getProducts = createAsyncThunk(
     }
   }
 ); // End of get products method
+
+export const product_price_range = createAsyncThunk(
+  'products/product_price_range',
+  async (_, { fulfillWithValue }) => {
+    try {
+      const { data } = await api.get('/home/product-price-range');
+      // console.log(data);
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      console.log(error.response?.data?.message || 'Something went wrong');
+    }
+  }
+); // End of get product price range method
 
 export const homeReducer = createSlice({
   name: 'home',
@@ -36,6 +49,10 @@ export const homeReducer = createSlice({
     latest_products: [],
     topRated_products: [],
     discounted_products: [],
+    priceRange: {
+      low: 0,
+      high: 100,
+    },
     loading: false,
     successMessage: '',
     errorMessage: '',
@@ -82,6 +99,24 @@ export const homeReducer = createSlice({
       .addCase(getProducts.rejected, (state, { payload }) => {
         state.loading = false;
         state.errorMessage = payload.errorMessage || 'Failed to fetch products';
+      })
+      .addCase(product_price_range.pending, (state) => {
+        state.loading = true;
+        state.errorMessage = '';
+      })
+
+      .addCase(product_price_range.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.latest_products = payload.latest_products;
+        state.priceRange = payload.priceRange;
+
+        state.successMessage = 'Products price range fetched successfully!';
+      })
+
+      .addCase(product_price_range.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.errorMessage =
+          payload.errorMessage || 'Failed to fetch products price range';
       });
   },
 });

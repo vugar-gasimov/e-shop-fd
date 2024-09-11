@@ -16,8 +16,10 @@ import { RiLockPasswordFill } from 'react-icons/ri';
 import { TiShoppingCart } from 'react-icons/ti';
 import { BiSolidPhoneCall } from 'react-icons/bi';
 import { TbMailCog } from 'react-icons/tb';
+import { useSelector } from 'react-redux';
 
-const Header = ({ categories }) => {
+const Header = () => {
+  const { categories } = useSelector((state) => state.home || {});
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [showSidebar, setShowSidebar] = useState(true);
