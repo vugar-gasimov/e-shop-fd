@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   FaChevronRight,
   FaChevronDown,
@@ -65,7 +65,11 @@ const RatingFilter = ({ setRating, resetRating }) => (
   </div>
 );
 
-const Shops = () => {
+const SearchProducts = () => {
+  let [searchParams, setSearchParams] = useSearchParams();
+  const category = searchParams.get('category');
+  const searchValue = searchParams.get('value');
+
   const dispatch = useDispatch();
   const {
     products,
@@ -99,23 +103,15 @@ const Shops = () => {
   const [pageNumber, setPageNumber] = useState(1);
 
   const [sortPrice, setSortPrice] = useState('');
-  const [category, setCategory] = useState('');
-
-  const queryCategory = (e, value) => {
-    if (e.target.checked) {
-      setCategory(value);
-    } else {
-      setCategory('');
-    }
-  };
 
   useEffect(() => {
     const { values } = state;
     if (values[0] !== undefined && values[1] !== undefined) {
       dispatch(
         query_products({
-          low: values[0],
-          high: values[1],
+          low: values[0] || '',
+          high: values[1] || '',
+          searchValue,
           pageNumber,
           sortPrice,
           category,
@@ -123,7 +119,7 @@ const Shops = () => {
         })
       );
     }
-  }, [state, pageNumber, sortPrice, category, rating, dispatch]);
+  }, [state, pageNumber, searchValue, sortPrice, category, rating, dispatch]);
 
   const resetRating = () => {
     setRating('');
@@ -147,13 +143,13 @@ const Shops = () => {
           <div className='absolute left-0 top-0 w-full h-full bg-[#2422228a]'>
             <div className='w-[85%] md:w-[80%] sm:w-[90%] lg:w-[90%] h-full mx-auto'>
               <div className='flex flex-col justify-center gap-1 items-center h-full w-full text-white'>
-                <h2 className='text-3xl font-bold'>Shop Page</h2>
+                <h2 className='text-3xl font-bold'>Category Page</h2>
                 <div className='flex justify-center items-center gap-2 text-2xl w-full'>
                   <Link to='/'>Home</Link>
                   <span className='pt-1'>
                     <FaChevronRight />
                   </span>
-                  <p>Products</p>
+                  <p>Category</p>
                 </div>
               </div>
             </div>
@@ -172,32 +168,6 @@ const Shops = () => {
                     : 'md:max-h-[500px] md:opacity-100 md:overflow-auto md:mb-0'
                 }`}
               >
-                <h3 className='text-3xl font-bold mb-3 text-slate-600'>
-                  Category
-                </h3>
-                <div className='py-2'>
-                  {categories.map((c) => (
-                    <div
-                      key={c._id}
-                      className='flex justify-start items-center gap-2 py-2'
-                    >
-                      <input
-                        checked={category === c.name ? true : false}
-                        onChange={(e) => queryCategory(e, c.name)}
-                        type='checkbox'
-                        name='category'
-                        id={c.name}
-                        className='custom-checkbox w-5 h-5 bg-gray-200 border border-gray-400 rounded cursor-pointer hover:bg-gray-300 peer-focus:ring peer-focus:ring-green-300 peer-checked:bg-green-500 peer-checked:border-green-500'
-                      />
-                      <label
-                        htmlFor={c.name}
-                        className='text-slate-600 block cursor-pointer '
-                      >
-                        {c.name}
-                      </label>
-                    </div>
-                  ))}
-                </div>
                 <div className='p-2 flex flex-col gap-5'>
                   <h3 className='text-3xl font-bold mb-3 text-slate-600'>
                     Price
@@ -302,4 +272,4 @@ const Shops = () => {
   );
 };
 
-export default Shops;
+export default SearchProducts;

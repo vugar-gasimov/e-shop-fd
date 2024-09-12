@@ -9,6 +9,8 @@ import Login from './pages/Login';
 import { useEffect } from 'react';
 import { getCategories } from './store/reducers/homeReducer';
 import { useDispatch } from 'react-redux';
+import CategoryShop from './pages/CategoryShop';
+import SearchProducts from './components/SearchProducts';
 
 function App() {
   const dispatch = useDispatch();
@@ -24,7 +26,9 @@ function App() {
         <Route path='/register' element={<Register />} />
         <Route path='/shops' element={<Shops />} />
         <Route path='/carts' element={<Carts />} />
-        <Route path='/shipping' element={<Shipping />} />
+        <Route path='/shopping?' element={<Shipping />} />
+        <Route path='/products?' element={<CategoryShop />} />
+        <Route path='/products/search?' element={<SearchProducts />} />
         <Route path='/product/details/:slug' element={<Details />} />
       </Routes>
     </BrowserRouter>

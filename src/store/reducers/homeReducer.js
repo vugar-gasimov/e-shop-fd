@@ -41,11 +41,35 @@ export const product_price_range = createAsyncThunk(
   }
 ); // End of get product price range method
 
+export const query_products = createAsyncThunk(
+  'products/query_products',
+  async (query, { fulfillWithValue }) => {
+    try {
+      const { data } = await api.get(
+        `/home/query-products?category=${query.category}&&rating=${
+          query.rating
+        }&&lowPrice=${query.low}&&highPrice=${query.high}&&sortPrice=${
+          query.sortPrice
+        }&&pageNumber=${query.pageNumber}&&searchValue=${
+          query.searchValue ? query.searchValue : ''
+        }`
+      );
+      // console.log(data);
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      console.log(error.response?.data?.message || 'Something went wrong');
+    }
+  }
+); // End of get product price range method
+
 export const homeReducer = createSlice({
   name: 'home',
   initialState: {
     categories: [],
     products: [],
+    totalProducts: 0,
+    perPage: 3,
     latest_products: [],
     topRated_products: [],
     discounted_products: [],
@@ -117,6 +141,25 @@ export const homeReducer = createSlice({
         state.loading = false;
         state.errorMessage =
           payload.errorMessage || 'Failed to fetch products price range';
+      })
+      .addCase(query_products.pending, (state) => {
+        state.loading = true;
+        state.errorMessage = '';
+      })
+
+      .addCase(query_products.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.products = payload.products;
+        state.totalProducts = payload.totalProducts;
+        state.perPage = payload.perPage;
+
+        state.successMessage = 'Products query fetched successfully!';
+      })
+
+      .addCase(query_products.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.errorMessage =
+          payload.errorMessage || 'Failed to fetch query products';
       });
   },
 });

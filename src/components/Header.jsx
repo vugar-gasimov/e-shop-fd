@@ -19,12 +19,13 @@ import { TbMailCog } from 'react-icons/tb';
 import { useSelector } from 'react-redux';
 
 const Header = () => {
+  const navigate = useNavigate();
+
   const { categories } = useSelector((state) => state.home || {});
   const { pathname } = useLocation();
-  const navigate = useNavigate();
   const [showSidebar, setShowSidebar] = useState(true);
   const [showCategory, setShowCategory] = useState(true);
-  const user = true;
+  const user = false;
   const wishList_count = 3;
 
   const categoryRef = useRef(null);
@@ -48,6 +49,11 @@ const Header = () => {
   const redirect = () => {
     navigate('/carts');
   };
+
+  const searchProducts = () => {
+    navigate(`/products/search?category=${category}&&value=${searchValue}`);
+  };
+
   return (
     <header className='w-full bg-white'>
       <section className='header-top bg-[#caddff] md-lg:hidden'>
@@ -492,7 +498,10 @@ const Header = () => {
                             alt={category.name}
                             className='w-[25px] h-[25px] rounded-full overflow-hidden object-contain'
                           />
-                          <Link className='text-sm block focus:bg-[#caddff] focus:outline-none focus:text-[#059473]  hover:text-[#059473]    hover:bg-[#caddff] px-2 py-1 rounded w-full text-center '>
+                          <Link
+                            to={`/products?category=${category.name}`}
+                            className='text-sm block focus:bg-[#caddff] focus:outline-none focus:text-[#059473]  hover:text-[#059473]    hover:bg-[#caddff] px-2 py-1 rounded w-full text-center '
+                          >
                             {category.name}
                           </Link>
                         </li>
@@ -537,6 +546,7 @@ const Header = () => {
                     className='w-full md:w-[300px] lg:w-[400px] p-2 border-transparent rounded-md focus:ring-[#059473] focus:outline-none transition duration-300'
                   />
                   <button
+                    onClick={searchProducts}
                     type='button'
                     className='bg-[#059473] hover:bg-[#047b59] right-0 absolute px-6 md:px-8 h-full font-semibold uppercase rounded-lg text-white transition-all duration-300 ease-in-out'
                   >
