@@ -22,10 +22,11 @@ const Header = () => {
   const navigate = useNavigate();
 
   const { categories } = useSelector((state) => state.home || {});
+  const { userInfo } = useSelector((state) => state.auth || {});
   const { pathname } = useLocation();
   const [showSidebar, setShowSidebar] = useState(true);
   const [showCategory, setShowCategory] = useState(true);
-  const user = false;
+
   const wishList_count = 3;
 
   const categoryRef = useRef(null);
@@ -137,7 +138,7 @@ const Header = () => {
                     </li>
                   </ul>
                 </div>
-                {user ? (
+                {userInfo ? (
                   <Link
                     to='/dashboard'
                     className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black  hover:scale-105 transition-transform duration-200'
@@ -145,7 +146,7 @@ const Header = () => {
                     <span>
                       <PiUserCircleFill size={20} />
                     </span>
-                    <span>Chuckle McGiggles</span>
+                    <span>{userInfo.name}</span>
                   </Link>
                 ) : (
                   <Link
@@ -342,7 +343,7 @@ const Header = () => {
                   </li>
                 </ul>
               </div>
-              {user ? (
+              {userInfo ? (
                 <Link
                   to='/dashboard'
                   className='flex cursor-pointer justify-center items-center gap-2 text-sm text-black'
@@ -350,7 +351,7 @@ const Header = () => {
                   <span>
                     <PiUserCircleFill size={20} />
                   </span>
-                  <span>Chuckle McGiggles</span>
+                  <span>{userInfo.name}</span>
                 </Link>
               ) : (
                 <Link

@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { FaFacebook, FaGoogle } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { useDispatch, useSelector } from 'react-redux';
+import { customer_login, clearMessages } from './../store/reducers/authReducer';
+import { FadeLoader } from 'react-spinners';
 const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loader, successMessage, errorMessage, userInfo } = useSelector(
+    (state) => state.auth || {}
+  );
+
   const [state, setState] = useState({
     email: '',
     password: '',
@@ -19,11 +28,30 @@ const Login = () => {
 
   const login = (e) => {
     e.preventDefault();
-    console.log(state);
+    dispatch(customer_login(state));
   };
+
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(clearMessages());
+    }
+    if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(clearMessages());
+    }
+    if (userInfo) {
+      navigate('/');
+    }
+  }, [dispatch, successMessage, errorMessage, navigate, userInfo]);
 
   return (
     <>
+      {loader && (
+        <div className='w-screen h-screen flex justify-center items-center fixed left-0 top-0 bg-[#38303033] z-[999]'>
+          <FadeLoader />
+        </div>
+      )}
       <Header />
       <main className='bg-slate-200 mt-4'>
         <section className='w-full justify-center items-center p-10'>
@@ -43,7 +71,7 @@ const Login = () => {
                       onChange={inputHandler}
                       value={state.email}
                       type='email'
-                      id='email'
+                      id='user-email'
                       name='email'
                       placeholder='Your email...'
                       required
@@ -58,7 +86,7 @@ const Login = () => {
                       onChange={inputHandler}
                       value={state.password}
                       type='password'
-                      id='password'
+                      id='user-password'
                       name='password'
                       placeholder='Your password...'
                       required

@@ -1,9 +1,45 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FaEye, FaHeart, FaShoppingCart } from 'react-icons/fa';
 import Ratings from '../Ratings';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { add_to_cart, clearMessages } from '../../store/reducers/cartReducer';
+import toast from 'react-hot-toast';
 
 const FeaturedProducts = ({ products }) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { userInfo } = useSelector((state) => state.auth || {});
+  const { successMessage, errorMessage } = useSelector(
+    (state) => state.cart || {}
+  );
+
+  const add_cart = (id) => {
+    if (userInfo) {
+      dispatch(
+        add_to_cart({
+          userId: userInfo.id,
+          productId: id,
+          quantity: 1,
+        })
+      );
+    } else {
+      navigate('/login');
+    }
+  };
+
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(clearMessages());
+    }
+    if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(clearMessages());
+    }
+  }, [dispatch, successMessage, errorMessage]);
+
   return (
     <div className='w-[85%] flex flex-wrap mx-auto'>
       <div className='w-full'>
@@ -15,7 +51,7 @@ const FeaturedProducts = ({ products }) => {
       <div className='w-full grid grid-cols-4 md-lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6'>
         {products.map((p, i) => (
           <div
-            key={i}
+            key={p._id || i}
             className='border group transition-all duration-500 hover:shadow-md rounded-lg overflow-hidden'
           >
             <div className='relative overflow-hidden'>
@@ -42,7 +78,10 @@ const FeaturedProducts = ({ products }) => {
                     <FaEye />
                   </Link>
                 </li>
-                <li className='w-[38px] h-[38px] cursor-pointer bg-white flex justify-center items-center rounded-full hover:bg-[#059473] hover:text-white hover:rotate-[720deg] transition-all'>
+                <li
+                  onClick={() => add_cart(p._id || i)}
+                  className='w-[38px] h-[38px] cursor-pointer bg-white flex justify-center items-center rounded-full hover:bg-[#059473] hover:text-white hover:rotate-[720deg] transition-all'
+                >
                   <FaShoppingCart />
                 </li>
               </ul>
