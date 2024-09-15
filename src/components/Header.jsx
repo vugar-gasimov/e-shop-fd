@@ -23,6 +23,7 @@ const Header = () => {
 
   const { categories } = useSelector((state) => state.home || {});
   const { userInfo } = useSelector((state) => state.auth || {});
+  const { cart_product_count } = useSelector((state) => state.cart || {});
   const { pathname } = useLocation();
   const [showSidebar, setShowSidebar] = useState(true);
   const [showCategory, setShowCategory] = useState(true);
@@ -47,8 +48,13 @@ const Header = () => {
 
   const [searchValue, setSearchValue] = useState('');
   const [category, setCategory] = useState('');
-  const redirect = () => {
-    navigate('/carts');
+
+  const redirect_cart_page = () => {
+    if (userInfo) {
+      navigate('/carts');
+    } else {
+      navigate('/login');
+    }
   };
 
   const searchProducts = () => {
@@ -264,7 +270,7 @@ const Header = () => {
                       </div>
                     </div>
                     <div
-                      onClick={redirect}
+                      onClick={redirect_cart_page}
                       className='relative flex justify-center items-center cursor-pointer w-[35px] h-[35px] rounded-full bg-[#e2e2e2]  '
                     >
                       <button
@@ -277,9 +283,12 @@ const Header = () => {
                       >
                         <TiShoppingCart size={24} />
                       </button>
-                      <div className='w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px]'>
-                        {wishList_count}
-                      </div>
+
+                      {cart_product_count !== 0 && (
+                        <div className='w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px]'>
+                          {cart_product_count}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

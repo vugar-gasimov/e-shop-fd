@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaChevronRight, FaMinus, FaPlus } from 'react-icons/fa';
 import { BsCart4 } from 'react-icons/bs';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { get_cart_products } from '../store/reducers/cartReducer';
 const Carts = () => {
+  const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.auth || {});
   const navigate = useNavigate();
   const cart_products = [1, 2];
   const outOfStockProducts = [1, 2];
+
+  useEffect(() => {
+    if (userInfo && userInfo.id) {
+      dispatch(get_cart_products(userInfo.id));
+    }
+  }, [dispatch, userInfo]);
+
   const redirect = () => {
     navigate('/shipping', {
       state: {

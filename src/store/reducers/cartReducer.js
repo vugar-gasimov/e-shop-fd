@@ -6,7 +6,6 @@ export const add_to_cart = createAsyncThunk(
   async (info, { fulfillWithValue, rejectWithValue }) => {
     try {
       const { data } = await api.post('/home/product/add-to-cart', info);
-      console.log(data);
 
       return fulfillWithValue(data);
     } catch (error) {
@@ -14,6 +13,22 @@ export const add_to_cart = createAsyncThunk(
     }
   }
 ); // End of customer register method
+
+export const get_cart_products = createAsyncThunk(
+  'cart/get_cart_products',
+  async (userId, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data } = await api.get(
+        `/home/product/get-cart-products/${userId}`
+      );
+      console.log(data);
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
+  }
+); // End of get cart products method
 
 export const cartReducer = createSlice({
   name: 'cart',
@@ -50,6 +65,19 @@ export const cartReducer = createSlice({
         state.successMessage =
           payload.message || 'Product added to cart successfully.';
         state.cart_product_count = state.cart_product_count + 1;
+      })
+      .addCase(get_cart_products.pending, (state) => {
+        state.loading = true;
+        state.errorMessage = '';
+      })
+      .addCase(get_cart_products.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.errorMessage = payload.error || 'Failed to get cart products.';
+      })
+      .addCase(get_cart_products.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.successMessage =
+          payload.message || 'Get cart products  successfully.';
       });
   },
 });
