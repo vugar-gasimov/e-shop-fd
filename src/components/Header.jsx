@@ -23,7 +23,7 @@ const Header = () => {
 
   const { categories } = useSelector((state) => state.home || {});
   const { userInfo } = useSelector((state) => state.auth || {});
-  const { cart_product_count } = useSelector((state) => state.cart || {});
+  const { cart_products_count } = useSelector((state) => state.cart || {});
   const { pathname } = useLocation();
   const [showSidebar, setShowSidebar] = useState(true);
   const [showCategory, setShowCategory] = useState(true);
@@ -265,7 +265,7 @@ const Header = () => {
                       >
                         <FaHeart />
                       </button>
-                      <div className='w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px]'>
+                      <div className='w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px] text-sm'>
                         {wishList_count}
                       </div>
                     </div>
@@ -284,9 +284,9 @@ const Header = () => {
                         <TiShoppingCart size={24} />
                       </button>
 
-                      {cart_product_count !== 0 && (
-                        <div className='w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px]'>
-                          {cart_product_count}
+                      {cart_products_count !== 0 && (
+                        <div className='w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px] text-sm'>
+                          {cart_products_count}
                         </div>
                       )}
                     </div>

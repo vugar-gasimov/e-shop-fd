@@ -21,7 +21,6 @@ export const get_cart_products = createAsyncThunk(
       const { data } = await api.get(
         `/home/product/get-cart-products/${userId}`
       );
-      console.log(data);
 
       return fulfillWithValue(data);
     } catch (error) {
@@ -30,13 +29,59 @@ export const get_cart_products = createAsyncThunk(
   }
 ); // End of get cart products method
 
+export const remove_cart_product = createAsyncThunk(
+  'cart/remove_cart_product',
+  async (cartId, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data } = await api.delete(
+        `/home/product/remove-cart-product/${cartId}`
+      );
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
+  }
+); // End of remove cart product method
+
+export const quantity_increment = createAsyncThunk(
+  'cart/quantity_increment',
+  async (cartId, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data } = await api.put(
+        `/home/product/quantity-increment/${cartId}`
+      );
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
+  }
+); // End of remove cart product method
+
+export const quantity_decrement = createAsyncThunk(
+  'cart/quantity_decrement',
+  async (cartId, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data } = await api.put(
+        `/home/product/quantity-decrement/${cartId}`
+      );
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
+  }
+); // End of remove cart product method
+
 export const cartReducer = createSlice({
   name: 'cart',
   initialState: {
     cart_products: [],
     wish_products: [],
-    cart_product_count: 0,
-    wish_product_count: 0,
+    cart_products_count: 0,
+    wish_products_count: 0,
+    buy_product_item: 0,
     shipping_fee: 0,
     price: 0,
     out_of_stock: [],
@@ -64,7 +109,7 @@ export const cartReducer = createSlice({
         state.loading = false;
         state.successMessage =
           payload.message || 'Product added to cart successfully.';
-        state.cart_product_count = state.cart_product_count + 1;
+        state.cart_products_count = state.cart_product_count + 1;
       })
       .addCase(get_cart_products.pending, (state) => {
         state.loading = true;
@@ -72,12 +117,32 @@ export const cartReducer = createSlice({
       })
       .addCase(get_cart_products.rejected, (state, { payload }) => {
         state.loading = false;
-        state.errorMessage = payload.error || 'Failed to get cart products.';
+        state.errorMessage = payload.error || 'Failed to fetch cart products.';
       })
       .addCase(get_cart_products.fulfilled, (state, { payload }) => {
+        state.cart_products = payload.cart_products;
+        state.price = payload.price;
+        state.cart_products_count = payload.cart_products_count;
+        state.shipping_fee = payload.shipping_fee;
+        state.out_of_stock = payload.outOfStockProducts;
+        state.buy_product_item = payload.buy_product_item;
+
         state.loading = false;
+      })
+      .addCase(remove_cart_product.fulfilled, (state, { payload }) => {
         state.successMessage =
-          payload.message || 'Get cart products  successfully.';
+          payload.message || 'Product removed successfully.';
+        state.loading = false;
+      })
+      .addCase(quantity_increment.fulfilled, (state, { payload }) => {
+        state.successMessage =
+          payload.message || 'Product Incremented successfully.';
+        state.loading = false;
+      })
+      .addCase(quantity_decrement.fulfilled, (state, { payload }) => {
+        state.successMessage =
+          payload.message || 'Product decremented successfully.';
+        state.loading = false;
       });
   },
 });

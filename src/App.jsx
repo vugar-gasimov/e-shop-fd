@@ -26,7 +26,7 @@ function App() {
         <Route path='/register' element={<Register />} />
         <Route path='/shops' element={<Shops />} />
         <Route path='/carts' element={<Carts />} />
-        <Route path='/shopping?' element={<Shipping />} />
+        <Route path='/shipping' element={<Shipping />} />
         <Route path='/products?' element={<CategoryShop />} />
         <Route path='/products/search?' element={<SearchProducts />} />
         <Route path='/product/details/:slug' element={<Details />} />

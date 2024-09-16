@@ -1,12 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { FaChevronRight, FaMinus, FaPlus } from 'react-icons/fa';
-import { Link, useLocation } from 'react-router-dom';
-
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-hot-toast';
+import {
+  clearMessages,
+  get_cart_products,
+  remove_cart_product,
+  quantity_increment,
+  quantity_decrement,
+} from '../store/reducers/cartReducer';
 const Shipping = () => {
+  const location = useLocation();
+
+  // Destructure with fallback if location.state doesn't exist
+  const {
+    state: { products, price, shipping_fee, items },
+  } = useLocation();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { userInfo } = useSelector((state) => state.auth || {});
+  const { successMessage } = useSelector((state) => state.cart || {});
   const [res, setRes] = useState(false);
-  const [state, setState] = useState({
+  const [stateValues, setStateValues] = useState({
     name: '',
     address: '',
     phone: '',
@@ -17,17 +36,51 @@ const Shipping = () => {
   });
 
   const inputHandler = (e) => {
-    setState({
-      ...state,
+    setStateValues({
+      ...stateValues,
       [e.target.name]: e.target.value,
     });
   };
 
   const saveChanges = (e) => {
     e.preventDefault();
-    const { name, address, phone, post, province, city, area } = state;
+    const { name, address, phone, post, province, city, area } = stateValues;
     if (name && address && phone && post && province && city && area) {
       setRes(true);
+    }
+  };
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(clearMessages());
+    }
+  }, [dispatch, successMessage, userInfo?.id]);
+
+  useEffect(() => {
+    if (successMessage === 'Product removed successfully') {
+      dispatch(get_cart_products(userInfo.id));
+    }
+  }, [successMessage, dispatch, userInfo.id]);
+
+  const increment = (quantity, stock, cartId) => {
+    const temp = quantity + 1;
+    if (temp <= stock) {
+      dispatch(quantity_increment(cartId)).then(() => {
+        if (userInfo && userInfo.id) {
+          dispatch(get_cart_products(userInfo.id));
+        }
+      });
+    }
+  };
+  const decrement = (quantity, cartId) => {
+    let temp = quantity;
+    if (temp > 0) {
+      temp = quantity - 1;
+      dispatch(quantity_decrement(cartId)).then(() => {
+        if (userInfo && userInfo.id) {
+          dispatch(get_cart_products(userInfo.id));
+        }
+      });
     }
   };
 
@@ -69,7 +122,7 @@ const Shipping = () => {
                               <label htmlFor='name'>Name</label>
                               <input
                                 onChange={inputHandler}
-                                value={state.name}
+                                value={stateValues.name}
                                 type='text'
                                 name='name'
                                 id='name'
@@ -81,7 +134,7 @@ const Shipping = () => {
                               <label htmlFor='address'>Address</label>
                               <input
                                 onChange={inputHandler}
-                                value={state.address}
+                                value={stateValues.address}
                                 type='text'
                                 name='address'
                                 id='address'
@@ -95,7 +148,7 @@ const Shipping = () => {
                               <label htmlFor='phone'>Phone</label>
                               <input
                                 onChange={inputHandler}
-                                value={state.phone}
+                                value={stateValues.phone}
                                 type='tel'
                                 name='phone'
                                 id='phone'
@@ -107,7 +160,7 @@ const Shipping = () => {
                               <label htmlFor='post'>Post</label>
                               <input
                                 onChange={inputHandler}
-                                value={state.post}
+                                value={stateValues.post}
                                 type='text'
                                 name='post'
                                 id='post'
@@ -121,7 +174,7 @@ const Shipping = () => {
                               <label htmlFor='province'>Province</label>
                               <input
                                 onChange={inputHandler}
-                                value={state.province}
+                                value={stateValues.province}
                                 type='text'
                                 name='province'
                                 id='province'
@@ -133,7 +186,7 @@ const Shipping = () => {
                               <label htmlFor='city'>City</label>
                               <input
                                 onChange={inputHandler}
-                                value={state.city}
+                                value={stateValues.city}
                                 type='text'
                                 name='city'
                                 id='city'
@@ -147,7 +200,7 @@ const Shipping = () => {
                               <label htmlFor='area'>Area</label>
                               <input
                                 onChange={inputHandler}
-                                value={state.area}
+                                value={stateValues.area}
                                 type='text'
                                 name='area'
                                 id='area'
@@ -170,15 +223,15 @@ const Shipping = () => {
                     {res && (
                       <div className='flex flex-col gap-1'>
                         <h4 className='text-slate-600 font-semibold pb-2'>
-                          Deliver to {state.name}, {state.phone}
+                          Deliver to {stateValues.name}, {stateValues.phone}
                         </h4>
                         <p>
                           <span className='bg-blue-200 text-blue-800 text-sm font-medium mr-2 px-2 py-1 rounded'>
                             Home
                           </span>
                           <span>
-                            {state.address}, {state.province}, {state.city},
-                            {state.area}
+                            {stateValues.address}, {stateValues.province},{' '}
+                            {stateValues.city},{stateValues.area}
                           </span>
                         </p>
                         <div className='flex justify-between items-center'>
@@ -195,53 +248,86 @@ const Shipping = () => {
                       </div>
                     )}
                   </div>
-                  {[1, 2].map((p, i) => (
-                    <div className='flex bg-white p-4 flex-col gap-2 shadow-md rounded-md'>
+                  {products.map((p, i) => (
+                    <div
+                      key={i}
+                      className='flex bg-white p-4 flex-col gap-2 shadow-md rounded-md'
+                    >
                       <div className='flex justify-center items-center'>
                         <h3 className='text-md text-slate-600 font-bold'>
-                          Easy Shop
+                          {p.shopName}
                         </h3>
                       </div>
-                      {[1, 2].map((p, i) => (
+                      {p.products.map((pt, i) => (
                         <div key={i} className='w-full flex flex-wrap '>
                           <div className='flex sm:w-full gap-2 w-7/12'>
                             <div className='flex gap-2 justify-start items-center'>
                               <img
-                                src={`http://localhost:3000/images/products/${
-                                  i + 1
-                                }.webp`}
-                                alt={`Product ${i + 1}`}
+                                src={pt.productInfo.images[0]}
+                                alt={`Product ${pt.productsInfo.name} img`}
                                 loading='lazy'
                                 className='w-[80px] h-[80px] rounded-md object-cover'
                               />
                               <div className='pr-4 text-slate-600'>
                                 <h3 className='text-md font-semibold'>
-                                  Product name:
+                                  Name: {pt.productsInfo.name}
                                 </h3>
-                                <p className='text-sm'>Brand: Tyera</p>
+                                <p className='text-sm'>
+                                  Brand: {pt.productsInfo.brand}
+                                </p>
                               </div>
                             </div>
                           </div>
                           <div className='flex justify-between w-5/12 sm:w-full sm:mt-3'>
                             <div className='pl-4 sm:pl-0'>
-                              <h3 className='text-lg text-green-500'>$199</h3>
-                              <p className='line-through'>250</p>
-                              <p className=''>-20%</p>
+                              <h3 className='text-lg text-green-500'>
+                                $
+                                {pt.productsInfo.price -
+                                  Math.floor(
+                                    (pt.productsInfo.price *
+                                      pt.productsInfo.discount) /
+                                      100
+                                  )}
+                              </h3>
+                              <p className='line-through'>
+                                {pt.productsInfo.discount > 0
+                                  ? `${pt.productsInfo.price}`
+                                  : ''}
+                              </p>
+                              <p className=''>
+                                {pt.productsInfo.discount > 0
+                                  ? `Discount: -${pt.productsInfo.discount}%`
+                                  : 'No Discount'}
+                              </p>
                             </div>
                             <div className='flex gap-2 flex-col'>
                               <div className='flex bg-slate-200 h-[30px] justify-center items-center text-xl'>
                                 <button
+                                  onClick={() => decrement(pt.quantity, pt._id)}
                                   type='button'
                                   className='px-3 cursor-pointer'
                                 >
                                   <FaMinus size={15} />
                                 </button>
-                                <p className='px-3 font-bold'>2</p>
-                                <button type='button' className='px-3'>
+                                <p className='px-3 font-bold'>{pt.quantity}</p>
+                                <button
+                                  onClick={() =>
+                                    increment(
+                                      pt.quantity,
+                                      pt.productsInfo.stock,
+                                      pt._id
+                                    )
+                                  }
+                                  type='button'
+                                  className='px-3'
+                                >
                                   <FaPlus size={15} />
                                 </button>
                               </div>
                               <button
+                                onClick={() =>
+                                  dispatch(remove_cart_product(pt._id))
+                                }
                                 type='button'
                                 className='inline-block px-4 py-2 bg-[#059473] text-white font-bold text-md rounded-lg hover:bg-[#047b59] transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#047b59] focus:ring-opacity-50 whitespace-nowrap'
                               >
@@ -260,24 +346,28 @@ const Shipping = () => {
                   <div className='bg-white p-3 text-slate-600 flex flex-col gap-3 shadow-md rounded-md'>
                     <h3 className='text-xl font-bold'>Order Summary</h3>
                     <div className='flex justify-between items-center'>
-                      <span>Total items: </span>
-                      <span>$99 </span>
+                      <span>Total items: ({items})</span>
+                      <span>${price} </span>
                     </div>
                     <div className='flex justify-between items-center'>
                       <span>Delivery fee: </span>
 
-                      <span>$10 </span>
+                      <span>${shipping_fee} </span>
                     </div>
 
                     <div className='flex justify-between items-center'>
                       <span>Total payment: </span>
 
-                      <span className='text-lg text-[#059473]'>$10 </span>
+                      <span className='text-lg text-[#059473]'>
+                        ${price + shipping_fee}{' '}
+                      </span>
                     </div>
                     <div className='flex justify-between items-center'>
                       <span>Total: </span>
 
-                      <span className='text-lg text-[#059473]'>$10 </span>
+                      <span className='text-lg text-[#059473]'>
+                        ${price + shipping_fee}{' '}
+                      </span>
                     </div>
                     <button
                       disabled={res ? false : true}
