@@ -14,8 +14,10 @@ import {
 } from '../store/reducers/cartReducer';
 import toast from 'react-hot-toast';
 import { FadeLoader } from 'react-spinners';
+
 const Carts = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.auth || {});
   const {
     cart_products,
@@ -26,7 +28,6 @@ const Carts = () => {
     loading,
     successMessage,
   } = useSelector((state) => state.cart || {});
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (userInfo && userInfo.id) {
@@ -34,32 +35,10 @@ const Carts = () => {
     }
   }, [dispatch, userInfo]);
 
-  // const redirect = () => {
-  //   navigate('/shipping', {
-  //     state: {
-  //       products: cart_products,
-  //       price: price,
-  //       shipping_fee: shipping_fee,
-  //       items: buy_product_item,
-  //     },
-  //   });
-  // };
-  const handleNavigate = () => {
-    navigate('/shipping', {
-      state: {
-        products: cart_products,
-        price: price,
-        shipping_fee: shipping_fee,
-        items: buy_product_item,
-      },
-    });
-  };
-
   useEffect(() => {
     if (successMessage) {
       toast.success(successMessage);
       dispatch(clearMessages());
-      // dispatch(get_cart_products(userInfo.id));
     }
   }, [dispatch, successMessage, userInfo?.id]);
 
@@ -89,6 +68,16 @@ const Carts = () => {
         }
       });
     }
+  };
+  const handleNavigate = () => {
+    navigate('/shipping', {
+      state: {
+        products: cart_products,
+        price: price,
+        shipping_fee: shipping_fee,
+        items: buy_product_item,
+      },
+    });
   };
   return (
     <>

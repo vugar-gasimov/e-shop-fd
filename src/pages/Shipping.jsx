@@ -12,16 +12,17 @@ import {
   quantity_increment,
   quantity_decrement,
 } from '../store/reducers/cartReducer';
+import { place_order } from '../store/reducers/orderReducer';
+
 const Shipping = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // Destructure with fallback if location.state doesn't exist
   const {
     state: { products, price, shipping_fee, items },
   } = useLocation();
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { userInfo } = useSelector((state) => state.auth || {});
   const { successMessage } = useSelector((state) => state.cart || {});
   const [res, setRes] = useState(false);
@@ -82,6 +83,20 @@ const Shipping = () => {
         }
       });
     }
+  };
+
+  const placeOrder = () => {
+    dispatch(
+      place_order({
+        price,
+        products,
+        shipping_fee,
+        items,
+        shippingInfo: stateValues,
+        userId: userInfo.id,
+        navigate,
+      })
+    );
   };
 
   return (
@@ -258,85 +273,90 @@ const Shipping = () => {
                           {p.shopName}
                         </h3>
                       </div>
-                      {p.products.map((pt, i) => (
-                        <div key={i} className='w-full flex flex-wrap '>
-                          <div className='flex sm:w-full gap-2 w-7/12'>
-                            <div className='flex gap-2 justify-start items-center'>
-                              <img
-                                src={pt.productInfo.images[0]}
-                                alt={`Product ${pt.productsInfo.name} img`}
-                                loading='lazy'
-                                className='w-[80px] h-[80px] rounded-md object-cover'
-                              />
-                              <div className='pr-4 text-slate-600'>
-                                <h3 className='text-md font-semibold'>
-                                  Name: {pt.productsInfo.name}
+                      {p.products &&
+                        p.products.map((pt, i) => (
+                          <div key={i} className='w-full flex flex-wrap '>
+                            <div className='flex sm:w-full gap-2 w-7/12'>
+                              <div className='flex gap-2 justify-start items-center'>
+                                <img
+                                  src={pt.productsInfo.images[0]}
+                                  alt={`Product ${pt.productsInfo.name} img`}
+                                  loading='lazy'
+                                  className='w-[80px] h-[80px] rounded-md object-cover'
+                                />
+                                <div className='pr-4 text-slate-600'>
+                                  <h3 className='text-md font-semibold'>
+                                    Name: {pt.productsInfo.name}
+                                  </h3>
+                                  <p className='text-sm'>
+                                    Brand: {pt.productsInfo.brand}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className='flex justify-between w-5/12 sm:w-full sm:mt-3'>
+                              <div className='pl-4 sm:pl-0'>
+                                <h3 className='text-lg text-green-500'>
+                                  $
+                                  {pt.productsInfo.price -
+                                    Math.floor(
+                                      (pt.productsInfo.price *
+                                        pt.productsInfo.discount) /
+                                        100
+                                    )}
                                 </h3>
-                                <p className='text-sm'>
-                                  Brand: {pt.productsInfo.brand}
+                                <p className='line-through'>
+                                  {pt.productsInfo.discount > 0
+                                    ? `${pt.productsInfo.price}`
+                                    : ''}
+                                </p>
+                                <p className=''>
+                                  {pt.productsInfo.discount > 0
+                                    ? `Discount: -${pt.productsInfo.discount}%`
+                                    : 'No Discount'}
                                 </p>
                               </div>
-                            </div>
-                          </div>
-                          <div className='flex justify-between w-5/12 sm:w-full sm:mt-3'>
-                            <div className='pl-4 sm:pl-0'>
-                              <h3 className='text-lg text-green-500'>
-                                $
-                                {pt.productsInfo.price -
-                                  Math.floor(
-                                    (pt.productsInfo.price *
-                                      pt.productsInfo.discount) /
-                                      100
-                                  )}
-                              </h3>
-                              <p className='line-through'>
-                                {pt.productsInfo.discount > 0
-                                  ? `${pt.productsInfo.price}`
-                                  : ''}
-                              </p>
-                              <p className=''>
-                                {pt.productsInfo.discount > 0
-                                  ? `Discount: -${pt.productsInfo.discount}%`
-                                  : 'No Discount'}
-                              </p>
-                            </div>
-                            <div className='flex gap-2 flex-col'>
-                              <div className='flex bg-slate-200 h-[30px] justify-center items-center text-xl'>
-                                <button
-                                  onClick={() => decrement(pt.quantity, pt._id)}
-                                  type='button'
-                                  className='px-3 cursor-pointer'
-                                >
-                                  <FaMinus size={15} />
-                                </button>
-                                <p className='px-3 font-bold'>{pt.quantity}</p>
+                              <div className='flex gap-2 flex-col'>
+                                <div className='flex bg-slate-200 h-[30px] justify-center items-center text-xl'>
+                                  <button
+                                    onClick={() =>
+                                      decrement(pt.quantity, pt._id)
+                                    }
+                                    type='button'
+                                    className='px-3 cursor-pointer'
+                                  >
+                                    <FaMinus size={15} />
+                                  </button>
+                                  <p className='px-3 font-bold'>
+                                    {pt.quantity}
+                                  </p>
+                                  <button
+                                    onClick={() =>
+                                      increment(
+                                        pt.quantity,
+                                        pt.productsInfo.stock,
+                                        pt._id
+                                      )
+                                    }
+                                    type='button'
+                                    className='px-3'
+                                  >
+                                    <FaPlus size={15} />
+                                  </button>
+                                </div>
                                 <button
                                   onClick={() =>
-                                    increment(
-                                      pt.quantity,
-                                      pt.productsInfo.stock,
-                                      pt._id
-                                    )
+                                    dispatch(remove_cart_product(pt._id))
                                   }
                                   type='button'
-                                  className='px-3'
+                                  className='inline-block px-4 py-2 bg-[#059473] text-white font-bold text-md rounded-lg hover:bg-[#047b59] transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#047b59] focus:ring-opacity-50 whitespace-nowrap'
                                 >
-                                  <FaPlus size={15} />
+                                  Remove
                                 </button>
                               </div>
-                              <button
-                                onClick={() =>
-                                  dispatch(remove_cart_product(pt._id))
-                                }
-                                type='button'
-                                className='inline-block px-4 py-2 bg-[#059473] text-white font-bold text-md rounded-lg hover:bg-[#047b59] transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#047b59] focus:ring-opacity-50 whitespace-nowrap'
-                              >
-                                Remove
-                              </button>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
                     </div>
                   ))}
                 </div>
@@ -370,6 +390,7 @@ const Shipping = () => {
                       </span>
                     </div>
                     <button
+                      onClick={placeOrder}
                       disabled={res ? false : true}
                       type='button'
                       className={`px-4 py-2  text-white font-bold text-md rounded-lg  transition-all duration-300 ease-in-out focus:outline-none  ${

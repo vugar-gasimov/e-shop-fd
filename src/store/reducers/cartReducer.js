@@ -126,7 +126,6 @@ export const cartReducer = createSlice({
         state.shipping_fee = payload.shipping_fee;
         state.out_of_stock = payload.outOfStockProducts;
         state.buy_product_item = payload.buy_product_item;
-
         state.loading = false;
       })
       .addCase(remove_cart_product.fulfilled, (state, { payload }) => {

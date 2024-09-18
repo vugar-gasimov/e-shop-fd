@@ -217,7 +217,7 @@ const Details = () => {
                           type='button'
                           className='h-[50px] hover:shadow-md hover:shadow-bg-[#047b59] px-8 py-3 bg-[#059473] text-white font-bold text-md rounded-lg hover:bg-[#047b59] transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#047b59] focus:ring-opacity-50 '
                         >
-                          Add to card
+                          Add to cart
                         </button>
                       </div>
                     </div>
