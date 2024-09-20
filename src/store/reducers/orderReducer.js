@@ -22,12 +22,19 @@ export const place_order = createAsyncThunk(
         userId,
         navigate,
       });
+      navigate('/payment', {
+        state: {
+          price: price + shipping_fee,
+          items,
+          orderId: data.orderId,
+        },
+      });
       console.log(data);
     } catch (error) {
       console.log(error.response?.data || 'Something went wrong');
     }
   }
-); // End of customer register method
+); // End of place order method
 
 // export const place_order = createAsyncThunk(
 //   'order/place_order',
