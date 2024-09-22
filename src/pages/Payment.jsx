@@ -7,11 +7,9 @@ import Stripe from '../components/Stripe';
 const Payment = () => {
   const { state } = useLocation();
   const price = state?.price || 0;
-  const items = state?.items || [];
+  const items = state?.items || 0;
   const orderId = state?.orderId || '';
-  //   const {
-  //     state: { price, items, orderId },
-  //   } = useLocation();
+
   const [paymentMethod, setPaymentMethod] = useState('stripe');
   return (
     <>
@@ -51,19 +49,36 @@ const Payment = () => {
                     <span className='text-slate-600'>COD</span>
                   </div>
                 </div>
+                {paymentMethod === 'stripe' && (
+                  <div>
+                    <Stripe />
+                  </div>
+                )}
+                {paymentMethod === 'cod' && (
+                  <div className='w-full px-4 py-8 bg-white shadow-md'>
+                    <button className=' px-10 py-2 bg-[#059473] text-white font-bold text-md rounded-lg hover:bg-[#047b59] transition-all hover:shadow-md hover:shadow-[#5daf9c] duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#047b59] focus:ring-opacity-50'>
+                      Pay now
+                    </button>
+                  </div>
+                )}
               </div>
-              {paymentMethod === 'stripe' && (
-                <div>
-                  <Stripe />
+            </div>
+            <div className='w-5/12 md:w-full'>
+              <div className='pl-2 md:pl-0 md:mb-0'>
+                <div className='bg-white shadow p-5 text-slate-600 flex flex-col gap-3'>
+                  <h3 className='font-bold text-lg '>Order Summary</h3>
+                  <div className='flex justify-between items-center'>
+                    <span className=''>
+                      {items} Items and Shipping fee is included.
+                    </span>
+                    <span className=''>${price}</span>
+                  </div>
+                  <div className='flex justify-between items-center font-semibold'>
+                    <span className=''>Total amount</span>
+                    <span className='text-lg text-green-600'>${price}</span>
+                  </div>
                 </div>
-              )}
-              {paymentMethod === 'cod' && (
-                <div className='w-full px-4 py-8 bg-white shadow-md'>
-                  <button className=' px-10 py-2 bg-[#059473] text-white font-bold text-md rounded-lg hover:bg-[#047b59] transition-all hover:shadow-md hover:shadow-[#5daf9c] duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#047b59] focus:ring-opacity-50'>
-                    Pay now
-                  </button>
-                </div>
-              )}
+              </div>
             </div>
           </div>
         </section>

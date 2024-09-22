@@ -16,12 +16,12 @@ import { place_order } from '../store/reducers/orderReducer';
 
 const Shipping = () => {
   const location = useLocation();
+  const { state } = location;
+
+  const { products = [], price = 0, shipping_fee = 0, items = 0 } = state || {};
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const {
-    state: { products, price, shipping_fee, items },
-  } = useLocation();
 
   const { userInfo } = useSelector((state) => state.auth || {});
   const { successMessage } = useSelector((state) => state.cart || {});
@@ -50,6 +50,21 @@ const Shipping = () => {
       setRes(true);
     }
   };
+
+  const placeOrder = () => {
+    dispatch(
+      place_order({
+        price,
+        products,
+        shipping_fee,
+        items,
+        shippingInfo: state,
+        userId: userInfo.id,
+        navigate,
+      })
+    );
+  };
+
   useEffect(() => {
     if (successMessage) {
       toast.success(successMessage);
@@ -83,20 +98,6 @@ const Shipping = () => {
         }
       });
     }
-  };
-
-  const placeOrder = () => {
-    dispatch(
-      place_order({
-        price,
-        products,
-        shipping_fee,
-        items,
-        shippingInfo: stateValues,
-        userId: userInfo.id,
-        navigate,
-      })
-    );
   };
 
   return (
