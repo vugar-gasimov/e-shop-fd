@@ -64,7 +64,7 @@ const Dashboard = () => {
                     <PiListHeartFill />
                   </span>
                   <Link
-                    to='/dashboard'
+                    to='/dashboard/wishlist'
                     className='block group-hover:scale-110 font-semibold'
                   >
                     Wishlist
@@ -86,7 +86,7 @@ const Dashboard = () => {
                     <GrShieldSecurity />
                   </span>
                   <Link
-                    to='/dashboard'
+                    to='/dashboard/change-password'
                     className='block group-hover:scale-110 font-semibold'
                   >
                     Change Password

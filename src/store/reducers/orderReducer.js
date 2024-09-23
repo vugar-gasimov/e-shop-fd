@@ -31,30 +31,36 @@ export const place_order = createAsyncThunk(
       });
       console.log(data);
     } catch (error) {
-      console.log(error.response?.data || 'Something went wrong');
+      console.log(
+        error.response?.data || 'An error occurred while placing the order'
+      );
     }
   }
-); // End of place order method
+); // End of Async Thunk:  place order method
 
-// export const place_order = createAsyncThunk(
-//   'order/place_order',
-//   async (info, { fulfillWithValue, rejectWithValue }) => {
-//     try {
-//       const { data } = await api.post('/home/product/add-to-cart', info);
+export const get_orders = createAsyncThunk(
+  'order/get_orders',
+  async ({ customerId, status }, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data } = await api.get(
+        `/home/customer/get-orders/${customerId}/${status}`
+      );
 
-//       return fulfillWithValue(data);
-//     } catch (error) {
-//       return rejectWithValue(error.response?.data || 'Something went wrong');
-//     }
-//   }
-// ); // End of customer register method
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || 'An error occurred while fetching orders'
+      );
+    }
+  }
+); // End of Async Thunk: get orders method
 
 export const orderReducer = createSlice({
   name: 'order',
   initialState: {
     myOrder: {},
     myOrders: [],
-    loading: false,
+    loader: false,
     successMessage: '',
     errorMessage: '',
   },
@@ -66,20 +72,19 @@ export const orderReducer = createSlice({
   },
   extraReducers: (builder) => {
     // builder
-    //   .addCase(add_to_cart.pending, (state) => {
-    //     state.loading = true;
+    //   .addCase(get_orders.pending, (state) => {
+    //     state.loader = true;
     //     state.errorMessage = '';
     //   })
-    //   .addCase(add_to_cart.rejected, (state, { payload }) => {
-    //     state.loading = false;
-    //     state.errorMessage = payload.error || 'Failed to add product to cart.';
-    //   })
-    //   .addCase(add_to_cart.fulfilled, (state, { payload }) => {
-    //     state.loading = false;
+    //   .addCase(get_orders.fulfilled, (state, { payload }) => {
+    //     state.loader = false;
     //     state.successMessage =
-    //       payload.message || 'Product added to cart successfully.';
-    //     state.cart_products_count = state.cart_product_count + 1;
+    //       payload.message || 'Orders fetched successfully!';
     //   })
+    //   .addCase(get_orders.rejected, (state, { payload }) => {
+    //     state.loader = false;
+    //     state.errorMessage = payload.error || 'Failed to fetch orders.';
+    //   });
   },
 });
 

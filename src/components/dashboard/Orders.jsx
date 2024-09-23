@@ -1,11 +1,23 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
 
 import { AiOutlineDollar } from 'react-icons/ai';
 import { HiOutlineDocumentMagnifyingGlass } from 'react-icons/hi2';
 
+import { get_orders } from '../../store/reducers/orderReducer';
+
 const Orders = () => {
+  const dispatch = useDispatch();
+
   const [orderStatus, setOrderStatus] = useState('all');
+
+  const { orderId } = useParams();
+  const { userInfo } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(get_orders({ customerId: userInfo.id, status: orderStatus }));
+  }, [dispatch, orderStatus, userInfo.id, orderId]);
 
   return (
     <div className='bg-white p-4 rounded-md  hover:shadow-lg transition-all transform duration-300'>
