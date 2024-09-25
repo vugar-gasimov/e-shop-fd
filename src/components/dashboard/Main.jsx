@@ -22,7 +22,7 @@ const Main = () => {
     pendingOrders,
     cancelledOrders,
     loader,
-    successMessage,
+
     errorMessage,
   } = useSelector((state) => state.dashboard);
 
@@ -43,7 +43,9 @@ const Main = () => {
       },
     });
   };
+
   if (errorMessage) return <div className='text-red-500'>{errorMessage}</div>;
+
   return (
     <div>
       {loader && (

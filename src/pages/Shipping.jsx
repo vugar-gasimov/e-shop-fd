@@ -58,7 +58,7 @@ const Shipping = () => {
         products,
         shipping_fee,
         items,
-        shippingInfo: state,
+        shippingInfo: stateValues,
         userId: userInfo.id,
         navigate,
       })

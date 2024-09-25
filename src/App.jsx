@@ -15,13 +15,14 @@ import Dashboard from './pages/Dashboard';
 
 import Main from './components/dashboard/Main';
 import Orders from './components/dashboard/Orders';
+import Wishlist from './components/dashboard/Wishlist';
+import OrderDetails from './components/dashboard/OrderDetails';
 import ChangePassword from './components/dashboard/ChangePassword';
 import SearchProducts from './components/SearchProducts';
 
 import { getCategories } from './store/reducers/homeReducer';
 
 import ProtectUser from './utils/ProtectUser';
-import Wishlist from './components/dashboard/Wishlist';
 
 function App() {
   const dispatch = useDispatch();
@@ -49,6 +50,7 @@ function App() {
             <Route path='my-orders' element={<Orders />} />
             <Route path='change-password' element={<ChangePassword />} />
             <Route path='wishlist' element={<Wishlist />} />
+            <Route path='order/details/:orderId' element={<OrderDetails />} />
           </Route>
         </Route>
       </Routes>

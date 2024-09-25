@@ -55,6 +55,22 @@ export const get_orders = createAsyncThunk(
   }
 ); // End of Async Thunk: get orders method
 
+export const get_order_info = createAsyncThunk(
+  'order/get_order_info',
+  async (orderId, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data } = await api.get(
+        `/home/customer/get-order-info/${orderId}`
+      );
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || 'An error occurred while fetching order info'
+      );
+    }
+  }
+); // End of Async Thunk: get order info method
+
 export const orderReducer = createSlice({
   name: 'order',
   initialState: {
@@ -71,20 +87,35 @@ export const orderReducer = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // builder
-    //   .addCase(get_orders.pending, (state) => {
-    //     state.loader = true;
-    //     state.errorMessage = '';
-    //   })
-    //   .addCase(get_orders.fulfilled, (state, { payload }) => {
-    //     state.loader = false;
-    //     state.successMessage =
-    //       payload.message || 'Orders fetched successfully!';
-    //   })
-    //   .addCase(get_orders.rejected, (state, { payload }) => {
-    //     state.loader = false;
-    //     state.errorMessage = payload.error || 'Failed to fetch orders.';
-    //   });
+    builder
+      .addCase(get_orders.pending, (state) => {
+        state.loader = true;
+        state.errorMessage = '';
+      })
+      .addCase(get_orders.fulfilled, (state, { payload }) => {
+        state.loader = false;
+        state.successMessage =
+          payload.message || 'Orders fetched successfully!';
+        state.myOrders = payload.orders;
+      })
+      .addCase(get_orders.rejected, (state, { payload }) => {
+        state.loader = false;
+        state.errorMessage = payload.error || 'Failed to fetch orders.';
+      })
+      .addCase(get_order_info.pending, (state) => {
+        state.loader = true;
+        state.errorMessage = '';
+      })
+      .addCase(get_order_info.fulfilled, (state, { payload }) => {
+        state.loader = false;
+        state.successMessage =
+          payload.message || 'Order info fetched successfully!';
+        state.myOrder = payload.order;
+      })
+      .addCase(get_order_info.rejected, (state, { payload }) => {
+        state.loader = false;
+        state.errorMessage = payload.error || 'Failed to fetch orders.';
+      });
   },
 });
 
