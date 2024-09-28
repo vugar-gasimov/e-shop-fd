@@ -3,17 +3,29 @@ import { FaEye, FaHeart, FaShoppingCart } from 'react-icons/fa';
 import Ratings from '../Ratings';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { add_to_cart, clearMessages } from '../../store/reducers/cartReducer';
+import {
+  add_to_cart,
+  add_to_wishlist,
+  clearMessages,
+  get_cart_products,
+} from '../../store/reducers/cartReducer';
 import toast from 'react-hot-toast';
+import { FadeLoader } from 'react-spinners';
 
 const FeaturedProducts = ({ products }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { userInfo } = useSelector((state) => state.auth || {});
-  const { successMessage, errorMessage } = useSelector(
+  const { successMessage, errorMessage, loading } = useSelector(
     (state) => state.cart || {}
   );
+
+  useEffect(() => {
+    if (userInfo && userInfo.id) {
+      dispatch(get_cart_products(userInfo.id));
+    }
+  }, [dispatch, userInfo]);
 
   const add_cart = (id) => {
     if (userInfo) {
@@ -26,6 +38,9 @@ const FeaturedProducts = ({ products }) => {
       );
     } else {
       navigate('/login');
+    }
+    if (userInfo && userInfo.id) {
+      dispatch(get_cart_products(userInfo.id));
     }
   };
 
@@ -40,8 +55,28 @@ const FeaturedProducts = ({ products }) => {
     }
   }, [dispatch, successMessage, errorMessage]);
 
+  const add_wishlist = (pro) => {
+    dispatch(
+      add_to_wishlist({
+        userId: userInfo.id,
+        productId: pro._id,
+        name: pro.name,
+        price: pro.price,
+        image: pro.images[0],
+        discount: pro.discount,
+        rating: pro.rating,
+        slug: pro.slug,
+      })
+    );
+  };
+
   return (
     <div className='w-[85%] flex flex-wrap mx-auto'>
+      {loading && (
+        <div className='w-screen h-screen flex justify-center items-center fixed left-0 top-0 bg-[#38303033] z-[999]'>
+          <FadeLoader />
+        </div>
+      )}
       <div className='w-full'>
         <div className='text-center flex justify-center items-center flex-col text-4xl text-slate-600 font-bold relative pb-[40px]'>
           <h2> Featured Products</h2>
@@ -51,7 +86,7 @@ const FeaturedProducts = ({ products }) => {
       <div className='w-full grid grid-cols-4 md-lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6'>
         {products.map((p, i) => (
           <div
-            key={p._id || i}
+            key={p._id}
             className='border group transition-all duration-500 hover:shadow-md rounded-lg overflow-hidden'
           >
             <div className='relative overflow-hidden'>
@@ -70,7 +105,10 @@ const FeaturedProducts = ({ products }) => {
                 className=' w-full object-contain h-[240px]'
               />
               <ul className='flex transition-all duration-700 -bottom-10 justify-center items-center gap-2 absolute w-full group-hover:bottom-3'>
-                <li className='w-[38px] h-[38px] cursor-pointer bg-white flex justify-center items-center rounded-full hover:bg-[#059473] hover:text-white hover:rotate-[720deg] transition-all'>
+                <li
+                  onClick={() => add_wishlist(p)}
+                  className='w-[38px] h-[38px] cursor-pointer bg-white flex justify-center items-center rounded-full hover:bg-[#059473] hover:text-white hover:rotate-[720deg] transition-all'
+                >
                   <FaHeart />
                 </li>
                 <li className='w-[38px] h-[38px] cursor-pointer bg-white flex justify-center items-center rounded-full hover:bg-[#059473] hover:text-white hover:rotate-[720deg] transition-all'>
@@ -79,7 +117,7 @@ const FeaturedProducts = ({ products }) => {
                   </Link>
                 </li>
                 <li
-                  onClick={() => add_cart(p._id || i)}
+                  onClick={() => add_cart(p._id)}
                   className='w-[38px] h-[38px] cursor-pointer bg-white flex justify-center items-center rounded-full hover:bg-[#059473] hover:text-white hover:rotate-[720deg] transition-all'
                 >
                   <FaShoppingCart />

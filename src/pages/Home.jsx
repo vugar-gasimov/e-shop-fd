@@ -7,11 +7,17 @@ import FeaturedProducts from '../components/products/FeaturedProducts';
 import Products from './../components/products/Products';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../store/reducers/homeReducer';
+import { FadeLoader } from 'react-spinners';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { products, latest_products, topRated_products, discounted_products } =
-    useSelector((state) => state.home || {});
+  const {
+    products,
+    latest_products,
+    topRated_products,
+    discounted_products,
+    loading,
+  } = useSelector((state) => state.home || {});
 
   useEffect(() => {
     dispatch(getProducts());
@@ -19,6 +25,11 @@ const Home = () => {
 
   return (
     <div className='w-full'>
+      {loading && (
+        <div className='w-screen h-screen flex justify-center items-center fixed left-0 top-0 bg-[#38303033] z-[999]'>
+          <FadeLoader />
+        </div>
+      )}
       <Header />
       <main>
         <Banner />

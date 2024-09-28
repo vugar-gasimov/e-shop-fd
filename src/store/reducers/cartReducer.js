@@ -57,7 +57,7 @@ export const quantity_increment = createAsyncThunk(
       return rejectWithValue(error.response?.data || 'Something went wrong');
     }
   }
-); // End of remove cart product method
+); // End of quantity increment cart product method
 
 export const quantity_decrement = createAsyncThunk(
   'cart/quantity_decrement',
@@ -72,7 +72,20 @@ export const quantity_decrement = createAsyncThunk(
       return rejectWithValue(error.response?.data || 'Something went wrong');
     }
   }
-); // End of remove cart product method
+); // End of quantity decrement cart product method
+
+export const add_to_wishlist = createAsyncThunk(
+  'wishlist/add_to_wishlist',
+  async (info, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data } = await api.post('/home/product/add-to-wishlist', info);
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
+  }
+); // End of add to wishlist cart product method
 
 export const cartReducer = createSlice({
   name: 'cart',
@@ -142,6 +155,22 @@ export const cartReducer = createSlice({
         state.successMessage =
           payload.message || 'Product decremented successfully.';
         state.loading = false;
+      })
+      .addCase(add_to_wishlist.pending, (state) => {
+        state.loading = true;
+        state.errorMessage = '';
+      })
+      .addCase(add_to_wishlist.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.errorMessage =
+          payload.error || 'Failed to add product to wishlist.';
+      })
+      .addCase(add_to_wishlist.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.wish_products_count =
+          state.wish_products_count > 0 ? state.wish_products_count + 1 : 1;
+        state.successMessage =
+          payload.message || 'Product is added to wishlist successfully.';
       });
   },
 });

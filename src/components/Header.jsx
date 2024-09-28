@@ -16,9 +16,11 @@ import { RiLockPasswordFill } from 'react-icons/ri';
 import { TiShoppingCart } from 'react-icons/ti';
 import { BiSolidPhoneCall } from 'react-icons/bi';
 import { TbMailCog } from 'react-icons/tb';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { get_cart_products } from '../store/reducers/cartReducer';
 
 const Header = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { categories } = useSelector((state) => state.home || {});
@@ -31,6 +33,12 @@ const Header = () => {
   const wishList_count = 3;
 
   const categoryRef = useRef(null);
+
+  useEffect(() => {
+    if (userInfo && userInfo.id && isNaN(cart_products_count)) {
+      dispatch(get_cart_products(userInfo.id));
+    }
+  }, [dispatch, userInfo, cart_products_count]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -286,7 +294,7 @@ const Header = () => {
 
                       {cart_products_count !== 0 && (
                         <div className='w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px] text-sm'>
-                          {cart_products_count}
+                          {isNaN(cart_products_count) ? 0 : cart_products_count}
                         </div>
                       )}
                     </div>

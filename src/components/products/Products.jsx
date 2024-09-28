@@ -62,13 +62,13 @@ const Products = ({ title, products }) => {
         renderButtonGroupOutside={true}
         customButtonGroup={<ButtonGroup />}
       >
-        {products.map((p) => {
+        {products.map((p, i) => {
           return (
-            <div key={p._id} className='flex flex-col justify-start gap-2'>
+            <div key={p._id || i} className='flex flex-col justify-start gap-2'>
               {p.map((pl, j) => (
                 <Link
                   to='#'
-                  key={pl._id}
+                  key={pl._id || j}
                   className='flex justify-start items-start hover:scale-95 transition-transform duration-200'
                 >
                   <img
