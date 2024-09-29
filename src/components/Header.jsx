@@ -25,12 +25,12 @@ const Header = () => {
 
   const { categories } = useSelector((state) => state.home || {});
   const { userInfo } = useSelector((state) => state.auth || {});
-  const { cart_products_count } = useSelector((state) => state.cart || {});
+  const { cart_products_count, wish_products_count } = useSelector(
+    (state) => state.cart || {}
+  );
   const { pathname } = useLocation();
   const [showSidebar, setShowSidebar] = useState(true);
   const [showCategory, setShowCategory] = useState(true);
-
-  const wishList_count = 3;
 
   const categoryRef = useRef(null);
 
@@ -273,9 +273,11 @@ const Header = () => {
                       >
                         <FaHeart />
                       </button>
-                      <div className='w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px] text-sm'>
-                        {wishList_count}
-                      </div>
+                      {wish_products_count !== 0 && (
+                        <div className='w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px] text-sm'>
+                          {isNaN(wish_products_count) ? 0 : wish_products_count}
+                        </div>
+                      )}
                     </div>
                     <div
                       onClick={redirect_cart_page}

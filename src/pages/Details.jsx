@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import React, { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+
 import {
   FaChevronRight,
   FaHeart,
@@ -8,20 +9,36 @@ import {
   FaLinkedin,
   FaPlus,
 } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
-import Ratings from '../components/Ratings';
-import { ImFacebook2 } from 'react-icons/im';
 import { FaSquareXTwitter } from 'react-icons/fa6';
+import { ImFacebook2 } from 'react-icons/im';
 import { VscGithub } from 'react-icons/vsc';
-import Reviews from '../components/Reviews';
+
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import Ratings from '../components/Ratings';
+import Reviews from '../components/Reviews';
+
+import { product_details } from '../store/reducers/homeReducer';
+
 const Details = () => {
+  const { slug } = useParams();
+  const dispatch = useDispatch();
+  const { product, relatedProducts, sameVendorProducts } = useSelector(
+    (state) => state.home || {}
+  );
+
+  useEffect(() => {
+    dispatch(product_details(slug));
+  }, [dispatch, slug]);
+
   const images = [1, 2, 3, 4, 5, 6];
   const [image, setImage] = useState('');
   const discount = 5;
@@ -98,12 +115,12 @@ const Details = () => {
                   <FaChevronRight />
                 </span>
                 <Link to='/' className=' hover:underline'>
-                  Category
+                  {product.category}
                 </Link>
                 <span className='pt-1'>
                   <FaChevronRight />
                 </span>
-                <p>Product Name</p>
+                <p>{product.name}</p>
               </div>
             </div>
           </div>
@@ -116,28 +133,24 @@ const Details = () => {
               <div className=''>
                 <div className='p-5 border rounded-md'>
                   <img
-                    src={
-                      image
-                        ? `http://localhost:3000/images/products/${image}.webp`
-                        : `http://localhost:3000/images/products/${images[2]}.webp`
-                    }
+                    src={image ? image : product.images?.[0]}
                     alt={
                       image
-                        ? `Product 1 ${image} img`
-                        : `Product  ${images[2]} img`
+                        ? `Product img of ${product.name}`
+                        : `Product img of ${product.name}`
                     }
                     className=' w-full object-contain h-[400px]'
                   />
                 </div>
                 <div className='py-3'>
-                  {images && (
+                  {product.images && (
                     <Carousel
                       autoPlay={true}
                       infinite={true}
                       responsive={responsive}
                       transitionDuration={500}
                     >
-                      {images.map((img, i) => {
+                      {product.images.map((img, i) => {
                         return (
                           <div
                             key={i}
@@ -145,8 +158,8 @@ const Details = () => {
                             className='p-2 transition-transform transform hover:scale-110 duration-300 ease-in-out cursor-pointer'
                           >
                             <img
-                              src={`http://localhost:3000/images/products/${img}.webp`}
-                              alt={`Product ${img} img`}
+                              src={img}
+                              alt={`Product img of ${product.name} - ${i + 1}`}
                               className=' w-full object-cover h-[120px] cursor-pointer rounded-lg'
                             />
                           </div>
@@ -158,50 +171,49 @@ const Details = () => {
               </div>
               <div className='flex flex-col gap-3'>
                 <div className='text-3xl text-slate-600 font-bold'>
-                  <h3 className=''>Product Name</h3>
+                  <h3 className=''>{product.name}</h3>
                 </div>
                 <div className='flex justify-start items-center gap-4'>
                   <div className='flex text-xl'>
-                    <Ratings ratings={4.5} />
+                    <Ratings ratings={product.rating} />
                   </div>
                   <span className='text-green-600'>(24 reviews)</span>
                 </div>
                 <div className='text-xl md:text-2xl text-slate-700 font-semibold flex flex-col gap-2'>
-                  {discount !== 0 ? (
+                  {product.discount !== 0 ? (
                     <p className='space-x-2'>
                       <span>Original Price:</span>
-                      <span className='line-through text-red-500'>$500</span>
+                      <span className='line-through text-red-500'>
+                        ${product.price}
+                      </span>
                       <span>Discounted Price:</span>
                       <span className='text-green-600 font-bold'>
-                        ${Math.floor(500 - (500 * discount) / 100)}
+                        $
+                        {Math.floor(
+                          product.price -
+                            (product.price * product.discount) / 100
+                        )}
                       </span>
                       <span className='text-sm text-green-500'>
-                        (-{discount}%)
+                        (-{product.discount}%)
                       </span>
                     </p>
                   ) : (
                     <p>
                       <span>Price is: </span>
-                      <span className='text-red-600 font-bold'>$500</span>
+                      <span className='text-red-600 font-bold'>
+                        ${product.price}
+                      </span>
                     </p>
                   )}
                 </div>
                 <div className='text-slate-600'>
                   <p className='overflow-y-auto max-h-36'>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Alias illo ducimus cum voluptatibus impedit architecto
-                    dolores amet eum velit laboriosam minima reprehenderit qui
-                    quia, repellendus recusandae consequuntur, culpa harum,
-                    illum dicta cupiditate distinctio laborum. Lorem ipsum dolor
-                    sit, amet consectetur adipisicing elit. Alias illo ducimus
-                    cum voluptatibus impedit architecto dolores amet eum velit
-                    laboriosam minima reprehenderit qui quia, repellendus
-                    recusandae consequuntur, culpa harum, illum dicta cupiditate
-                    distinctio laborum.
+                    {product.description}
                   </p>
                 </div>
                 <div className='flex gap-3 pb-10 border-b justify-between'>
-                  {stock ? (
+                  {product.stock ? (
                     <div className='flex justify-center items-center gap-4'>
                       <div className='flex bg-slate-200 h-[40px] justify-center items-center text-xl rounded-md'>
                         <button type='button' className='px-4 py-2'>

@@ -87,6 +87,36 @@ export const add_to_wishlist = createAsyncThunk(
   }
 ); // End of add to wishlist cart product method
 
+export const get_wishlist_products = createAsyncThunk(
+  'wishlist/get_wishlist_products',
+  async (userId, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data } = await api.get(
+        `/home/product/get-wishlist-products/${userId}`
+      );
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
+  }
+); // End of get wishlist products method
+
+export const remove_wishlist_product = createAsyncThunk(
+  'wishlist/remove_wishlist_product',
+  async (wishlistId, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const { data } = await api.delete(
+        `/home/product/remove-wishlist-product/${wishlistId}`
+      );
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
+  }
+); // End of remove wishlist product method
+
 export const cartReducer = createSlice({
   name: 'cart',
   initialState: {
@@ -171,6 +201,40 @@ export const cartReducer = createSlice({
           state.wish_products_count > 0 ? state.wish_products_count + 1 : 1;
         state.successMessage =
           payload.message || 'Product is added to wishlist successfully.';
+      })
+      .addCase(get_wishlist_products.pending, (state) => {
+        state.loading = true;
+        state.errorMessage = '';
+      })
+      .addCase(get_wishlist_products.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.errorMessage =
+          payload.error || 'Failed to fetch wishlist Products.';
+      })
+      .addCase(get_wishlist_products.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.successMessage =
+          payload.message || 'Wishlist Products fetched successfully.';
+        state.wish_products = payload.wishlist;
+        state.wish_products_count = payload.wishlistCount;
+      })
+      .addCase(remove_wishlist_product.pending, (state) => {
+        state.loading = true;
+        state.errorMessage = '';
+      })
+      .addCase(remove_wishlist_product.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.errorMessage =
+          payload.error || 'Failed to remove wishlist Product.';
+      })
+      .addCase(remove_wishlist_product.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.successMessage =
+          payload.message || 'Wishlist Product removed successfully.';
+        state.wish_products = state.wish_products.filter(
+          (p) => p._id !== payload.wishlistId
+        );
+        state.wish_products_count = state.wish_products_count - 1;
       });
   },
 });

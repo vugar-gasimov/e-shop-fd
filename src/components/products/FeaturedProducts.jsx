@@ -1,23 +1,25 @@
 import React, { useEffect } from 'react';
-import { FaEye, FaHeart, FaShoppingCart } from 'react-icons/fa';
-import Ratings from '../Ratings';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+
+import toast from 'react-hot-toast';
+import { FaEye, FaHeart, FaShoppingCart } from 'react-icons/fa';
+
+import Ratings from '../Ratings';
+
 import {
   add_to_cart,
   add_to_wishlist,
   clearMessages,
   get_cart_products,
 } from '../../store/reducers/cartReducer';
-import toast from 'react-hot-toast';
-import { FadeLoader } from 'react-spinners';
 
 const FeaturedProducts = ({ products }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { userInfo } = useSelector((state) => state.auth || {});
-  const { successMessage, errorMessage, loading } = useSelector(
+  const { successMessage, errorMessage } = useSelector(
     (state) => state.cart || {}
   );
 
@@ -72,11 +74,6 @@ const FeaturedProducts = ({ products }) => {
 
   return (
     <div className='w-[85%] flex flex-wrap mx-auto'>
-      {loading && (
-        <div className='w-screen h-screen flex justify-center items-center fixed left-0 top-0 bg-[#38303033] z-[999]'>
-          <FadeLoader />
-        </div>
-      )}
       <div className='w-full'>
         <div className='text-center flex justify-center items-center flex-col text-4xl text-slate-600 font-bold relative pb-[40px]'>
           <h2> Featured Products</h2>
@@ -112,7 +109,7 @@ const FeaturedProducts = ({ products }) => {
                   <FaHeart />
                 </li>
                 <li className='w-[38px] h-[38px] cursor-pointer bg-white flex justify-center items-center rounded-full hover:bg-[#059473] hover:text-white hover:rotate-[720deg] transition-all'>
-                  <Link to='/product/details/new'>
+                  <Link to={`/product/details/${p.slug}`}>
                     <FaEye />
                   </Link>
                 </li>

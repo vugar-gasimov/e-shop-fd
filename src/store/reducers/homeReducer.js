@@ -63,6 +63,19 @@ export const query_products = createAsyncThunk(
   }
 ); // End of get product price range method
 
+export const product_details = createAsyncThunk(
+  'products/product_details',
+  async (slug, { fulfillWithValue }) => {
+    try {
+      const { data } = await api.get(`/home/product-details/${slug}`);
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      console.log(error.response?.data?.message || 'Something went wrong');
+    }
+  }
+); // End of get product details method
+
 export const homeReducer = createSlice({
   name: 'home',
   initialState: {
@@ -77,6 +90,9 @@ export const homeReducer = createSlice({
       low: 0,
       high: 100,
     },
+    product: {},
+    relatedProducts: {},
+    sameVendorProducts: {},
     loading: false,
     successMessage: '',
     errorMessage: '',
@@ -160,6 +176,24 @@ export const homeReducer = createSlice({
         state.loading = false;
         state.errorMessage =
           payload.errorMessage || 'Failed to fetch query products';
+      })
+      .addCase(product_details.pending, (state) => {
+        state.loading = true;
+        state.errorMessage = '';
+      })
+
+      .addCase(product_details.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.successMessage =
+          payload.message || 'Product details fetched successfully!';
+        state.product = payload.product;
+        state.relatedProducts = payload.relatedProducts;
+        state.sameVendorProducts = payload.sameVendorProducts;
+      })
+
+      .addCase(product_details.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.errorMessage = payload.error || 'Failed to fetch Product details';
       });
   },
 });
