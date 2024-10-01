@@ -40,9 +40,8 @@ const Details = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { product, relatedProducts, sameVendorProducts, loading } = useSelector(
-    (state) => state.home || {}
-  );
+  const { product, relatedProducts, sameVendorProducts, loading, totalReview } =
+    useSelector((state) => state.home || {});
 
   const { userInfo } = useSelector((state) => state.auth || {});
   const { successMessage, errorMessage } = useSelector(
@@ -295,7 +294,9 @@ const Details = () => {
                   <div className='flex text-xl'>
                     <Ratings ratings={product.rating} />
                   </div>
-                  <span className='text-green-600'>(24 reviews)</span>
+                  <span className='text-green-600'>
+                    ({totalReview} reviews)
+                  </span>
                 </div>
                 <div className='text-xl md:text-2xl text-slate-700 font-semibold flex flex-col gap-2'>
                   {product.discount && product.discount > 0 ? (
@@ -328,6 +329,9 @@ const Details = () => {
                 <div className='text-slate-600'>
                   <p className='overflow-y-auto max-h-36'>
                     {product.description}
+                  </p>
+                  <p className='font-semibold text-slate-600 pt-1'>
+                    Shop Name: {product.shopName}
                   </p>
                 </div>
                 <div className='flex gap-3 pb-10 border-b justify-between'>
@@ -471,10 +475,10 @@ const Details = () => {
                     </span>
                   )}
                   <Link
-                    to='#'
+                    to={`/dashboard/chat/${product.vendorId}`}
                     className='px-6 py-3 text-[#059473] font-semibold hover:underline hover:text-[#047b59] transition-all duration-300'
                   >
-                    Chat with vendor
+                    Chat with Vendor
                   </Link>
                 </div>
               </div>

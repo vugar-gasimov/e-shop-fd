@@ -145,13 +145,11 @@ export const homeReducer = createSlice({
       .addCase(getCategories.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.categories = payload.categories;
-        state.successMessage = 'Categories fetched successfully!';
       })
 
       .addCase(getCategories.rejected, (state, { payload }) => {
         state.loading = false;
-        state.errorMessage =
-          payload.errorMessage || 'Failed to fetch categories';
+        state.errorMessage = payload.error || 'Failed to fetch categories';
       })
       .addCase(getProducts.pending, (state) => {
         state.loading = true;
@@ -169,7 +167,7 @@ export const homeReducer = createSlice({
 
       .addCase(getProducts.rejected, (state, { payload }) => {
         state.loading = false;
-        state.errorMessage = payload.errorMessage || 'Failed to fetch products';
+        state.errorMessage = payload.error || 'Failed to fetch products';
       })
       .addCase(product_price_range.pending, (state) => {
         state.loading = true;
@@ -187,7 +185,7 @@ export const homeReducer = createSlice({
       .addCase(product_price_range.rejected, (state, { payload }) => {
         state.loading = false;
         state.errorMessage =
-          payload.errorMessage || 'Failed to fetch products price range';
+          payload.error || 'Failed to fetch products price range';
       })
       .addCase(query_products.pending, (state) => {
         state.loading = true;
@@ -205,8 +203,7 @@ export const homeReducer = createSlice({
 
       .addCase(query_products.rejected, (state, { payload }) => {
         state.loading = false;
-        state.errorMessage =
-          payload.errorMessage || 'Failed to fetch query products';
+        state.errorMessage = payload.error || 'Failed to fetch query products';
       })
       .addCase(product_details.pending, (state) => {
         state.loading = true;
@@ -215,8 +212,6 @@ export const homeReducer = createSlice({
 
       .addCase(product_details.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.successMessage =
-          payload.message || 'Product details fetched successfully!';
         state.product = payload.product;
         state.relatedProducts = payload.relatedProducts;
         state.sameVendorProducts = payload.sameVendorProducts;
@@ -241,6 +236,23 @@ export const homeReducer = createSlice({
         state.loading = false;
         state.errorMessage =
           payload.error || 'Failed to submitted Product review';
+      })
+      .addCase(get_reviews.pending, (state) => {
+        state.loading = true;
+        state.errorMessage = '';
+      })
+
+      .addCase(get_reviews.fulfilled, (state, { payload }) => {
+        state.loading = false;
+
+        state.totalReview = payload.totalReview;
+        state.rating_review = payload.rating_review;
+        state.reviews = payload.reviews;
+      })
+
+      .addCase(get_reviews.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.errorMessage = payload.error || 'Failed to get Product reviews';
       });
   },
 });

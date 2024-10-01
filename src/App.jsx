@@ -13,12 +13,13 @@ import CategoryShop from './pages/CategoryShop';
 import Payment from './pages/Payment';
 import Dashboard from './pages/Dashboard';
 
+import SearchProducts from './components/SearchProducts';
+import Chat from './components/dashboard/Chat';
 import Main from './components/dashboard/Main';
 import Orders from './components/dashboard/Orders';
 import Wishlist from './components/dashboard/Wishlist';
 import OrderDetails from './components/dashboard/OrderDetails';
 import ChangePassword from './components/dashboard/ChangePassword';
-import SearchProducts from './components/SearchProducts';
 
 import { getCategories } from './store/reducers/homeReducer';
 
@@ -51,6 +52,8 @@ function App() {
             <Route path='change-password' element={<ChangePassword />} />
             <Route path='wishlist' element={<Wishlist />} />
             <Route path='order/details/:orderId' element={<OrderDetails />} />
+            <Route path='chat' element={<Chat />} />
+            <Route path='chat/:vendorId' element={<Chat />} />
           </Route>
         </Route>
       </Routes>

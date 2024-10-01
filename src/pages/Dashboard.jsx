@@ -75,7 +75,7 @@ const Dashboard = () => {
                     <IoMdChatbubbles />
                   </span>
                   <Link
-                    to='/dashboard'
+                    to='/dashboard/chat'
                     className='block group-hover:scale-110 font-semibold'
                   >
                     Chat
