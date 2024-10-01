@@ -1,22 +1,69 @@
-import React, { useState } from 'react';
-import Ratings from './Ratings';
-import RatingsTemp from './RatingsTemp';
-import Pagination from '../components/Pagination';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import RatingReact from 'react-rating';
-import { FaRegStar, FaStar } from 'react-icons/fa';
 
-const Reviews = () => {
-  const [perPage, setPerPage] = useState(1);
-  const [pageNumber, setPageNumber] = useState(10);
-  const userInfo = {};
+import { FaRegStar, FaStar } from 'react-icons/fa';
+import toast from 'react-hot-toast';
+
+import Ratings from './Ratings';
+import RatingsTemp from './RatingsTemp';
+
+import Pagination from '../components/Pagination';
+
+import {
+  clearMessages,
+  customer_review,
+  get_reviews,
+} from '../store/reducers/homeReducer';
+
+const Reviews = ({ product }) => {
+  const dispatch = useDispatch();
+
+  const [perPage, setPerPage] = useState(10);
+  const [pageNumber, setPageNumber] = useState(1);
+  const { userInfo } = useSelector((state) => state.auth || {});
+  const { successMessage, errorMessage } = useSelector(
+    (state) => state.home || {}
+  );
 
   const [rate, setRate] = useState('');
   const [review, setReview] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleReviewSubmit = (e) => {
     e.preventDefault();
+    const obj = {
+      name: userInfo.name,
+      review: review,
+      rating: rate,
+      productId: product._id,
+    };
+    dispatch(customer_review(obj));
   };
+
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      setRate('');
+      setReview('');
+      dispatch(clearMessages());
+    }
+    if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(clearMessages());
+    }
+  }, [dispatch, successMessage, errorMessage]);
+
+  useEffect(() => {
+    if (product._id) {
+      dispatch(
+        get_reviews({
+          productId: product._id,
+          pageNumber,
+        })
+      );
+    }
+  }, [dispatch, pageNumber, product]);
 
   return (
     <div className='mt-8'>
@@ -144,7 +191,7 @@ const Reviews = () => {
               />
             </div>
             {/* Review Form */}
-            <form onSubmit={handleSubmit} className='flex flex-col gap-3'>
+            <form onSubmit={handleReviewSubmit} className='flex flex-col gap-3'>
               <label
                 htmlFor='review'
                 className='text-lg font-semibold text-gray-700'
@@ -152,6 +199,8 @@ const Reviews = () => {
                 Write Your Review:
               </label>
               <textarea
+                value={review}
+                onChange={(e) => setReview(e.target.value)}
                 required
                 name=''
                 id='review'

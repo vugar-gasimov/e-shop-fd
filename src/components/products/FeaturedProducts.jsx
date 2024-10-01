@@ -40,6 +40,7 @@ const FeaturedProducts = ({ products }) => {
       );
     } else {
       navigate('/login');
+      toast.warning('Please log in to add products to your cart.');
     }
     if (userInfo && userInfo.id) {
       dispatch(get_cart_products(userInfo.id));
@@ -58,18 +59,23 @@ const FeaturedProducts = ({ products }) => {
   }, [dispatch, successMessage, errorMessage]);
 
   const add_wishlist = (pro) => {
-    dispatch(
-      add_to_wishlist({
-        userId: userInfo.id,
-        productId: pro._id,
-        name: pro.name,
-        price: pro.price,
-        image: pro.images[0],
-        discount: pro.discount,
-        rating: pro.rating,
-        slug: pro.slug,
-      })
-    );
+    if (userInfo) {
+      dispatch(
+        add_to_wishlist({
+          userId: userInfo.id,
+          productId: pro._id,
+          name: pro.name,
+          price: pro.price,
+          image: pro.images[0],
+          discount: pro.discount,
+          rating: pro.rating,
+          slug: pro.slug,
+        })
+      );
+    } else {
+      navigate('/login');
+      toast.warning('Please log in to add products to your wishlist.');
+    }
   };
 
   return (

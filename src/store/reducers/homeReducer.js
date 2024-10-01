@@ -76,6 +76,34 @@ export const product_details = createAsyncThunk(
   }
 ); // End of get product details method
 
+export const customer_review = createAsyncThunk(
+  'review/customer_review',
+  async (info, { fulfillWithValue }) => {
+    try {
+      const { data } = await api.post('/home/customer/submit-review', info);
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      console.log(error.response?.data?.message || 'Something went wrong');
+    }
+  }
+); // End of post customer review method
+
+export const get_reviews = createAsyncThunk(
+  'review/get_reviews',
+  async ({ productId, pageNumber }, { fulfillWithValue }) => {
+    try {
+      const { data } = await api.get(
+        `/home/customer/get-reviews/${productId}?pageNu=${pageNumber}`
+      );
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      console.log(error.response?.data?.message || 'Something went wrong');
+    }
+  }
+); // End of get product reviews method
+
 export const homeReducer = createSlice({
   name: 'home',
   initialState: {
@@ -91,11 +119,14 @@ export const homeReducer = createSlice({
       high: 100,
     },
     product: {},
-    relatedProducts: {},
-    sameVendorProducts: {},
+    relatedProducts: [],
+    sameVendorProducts: [],
     loading: false,
     successMessage: '',
     errorMessage: '',
+    totalReview: 0,
+    rating_review: [],
+    reviews: [],
   },
   reducers: {
     clearMessages: (state) => {
@@ -194,6 +225,22 @@ export const homeReducer = createSlice({
       .addCase(product_details.rejected, (state, { payload }) => {
         state.loading = false;
         state.errorMessage = payload.error || 'Failed to fetch Product details';
+      })
+      .addCase(customer_review.pending, (state) => {
+        state.loading = true;
+        state.errorMessage = '';
+      })
+
+      .addCase(customer_review.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.successMessage =
+          payload.message || 'Product review submitted successfully';
+      })
+
+      .addCase(customer_review.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.errorMessage =
+          payload.error || 'Failed to submitted Product review';
       });
   },
 });

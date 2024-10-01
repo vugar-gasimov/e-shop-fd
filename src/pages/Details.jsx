@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -21,28 +21,39 @@ import 'swiper/css/pagination';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 
+import toast from 'react-hot-toast';
+
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Ratings from '../components/Ratings';
 import Reviews from '../components/Reviews';
 
 import { product_details } from '../store/reducers/homeReducer';
+import {
+  add_to_cart,
+  add_to_wishlist,
+  clearMessages,
+} from '../store/reducers/cartReducer';
+import { FadeLoader } from 'react-spinners';
 
 const Details = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { product, relatedProducts, sameVendorProducts } = useSelector(
+  const { product, relatedProducts, sameVendorProducts, loading } = useSelector(
     (state) => state.home || {}
+  );
+
+  const { userInfo } = useSelector((state) => state.auth || {});
+  const { successMessage, errorMessage } = useSelector(
+    (state) => state.cart || {}
   );
 
   useEffect(() => {
     dispatch(product_details(slug));
   }, [dispatch, slug]);
 
-  const images = [1, 2, 3, 4, 5, 6];
   const [image, setImage] = useState('');
-  const discount = 5;
-  const stock = 24;
   const [state, setState] = useState('reviews');
 
   const responsive = {
@@ -77,8 +88,115 @@ const Details = () => {
     },
   };
 
+  const [quantity, setQuantity] = useState(1);
+
+  const inc = () => {
+    if (quantity >= product.stock) {
+      toast.error('You have reached the maximum available stock.');
+    } else {
+      setQuantity(quantity + 1);
+      toast.success('Quantity updated successfully.');
+    }
+  };
+  const dec = () => {
+    if (quantity <= 1) {
+      toast.error('Cannot reduce quantity below 1.');
+    } else {
+      setQuantity(quantity - 1);
+      toast.success('Quantity updated successfully.');
+    }
+  };
+
+  const add_cart = () => {
+    if (userInfo) {
+      dispatch(
+        add_to_cart({
+          userId: userInfo.id,
+          productId: product._id,
+          quantity,
+        })
+      );
+    } else {
+      navigate('/login');
+      toast.warning('Please log in to add products to your cart.');
+    }
+  };
+
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(clearMessages());
+    }
+    if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(clearMessages());
+    }
+  }, [dispatch, successMessage, errorMessage]);
+
+  const add_wishlist = () => {
+    if (userInfo) {
+      dispatch(
+        add_to_wishlist({
+          userId: userInfo.id,
+          productId: product._id,
+          name: product.name,
+          price: product.price,
+          image: product.images[0],
+          discount: product.discount,
+          rating: product.rating,
+          slug: product.slug,
+        })
+      );
+    } else {
+      navigate('/login');
+      toast.warning('Please log in to add products to your wishlist.');
+    }
+  };
+
+  const buy_now = () => {
+    if (!product || !product.images || product.images.length === 0) {
+      toast.error('Product information is missing or incomplete.');
+      return;
+    }
+    let price = 0;
+    if (product?.discount !== 0) {
+      price =
+        product.price - Math.floor((product.price * product.discount) / 100);
+    } else {
+      price = product?.price;
+    }
+    const obj = [
+      {
+        vendorId: product.vendorId,
+        shopName: product.shopName,
+        price: quantity * (price - Math.floor((price * 5) / 100)),
+        products: [
+          {
+            quantity,
+            productsInfo: product,
+          },
+        ],
+      },
+    ];
+    navigate('/shipping', {
+      state: {
+        products: obj,
+        price: price * quantity,
+        shipping_fee: 50,
+        items: 1,
+      },
+    });
+  };
+
+  if (errorMessage) return <div className='text-red-500'>{errorMessage}</div>;
+
   return (
     <>
+      {loading && (
+        <div className='w-screen h-screen flex justify-center items-center fixed left-0 top-0 bg-[#38303033] z-[999]'>
+          <FadeLoader />
+        </div>
+      )}
       <Header />
       <main>
         {/* Banner Section */}
@@ -180,7 +298,7 @@ const Details = () => {
                   <span className='text-green-600'>(24 reviews)</span>
                 </div>
                 <div className='text-xl md:text-2xl text-slate-700 font-semibold flex flex-col gap-2'>
-                  {product.discount !== 0 ? (
+                  {product.discount && product.discount > 0 ? (
                     <p className='space-x-2'>
                       <span>Original Price:</span>
                       <span className='line-through text-red-500'>
@@ -200,7 +318,7 @@ const Details = () => {
                     </p>
                   ) : (
                     <p>
-                      <span>Price is: </span>
+                      <span>Price: </span>
                       <span className='text-red-600 font-bold'>
                         ${product.price}
                       </span>
@@ -216,16 +334,35 @@ const Details = () => {
                   {product.stock ? (
                     <div className='flex justify-center items-center gap-4'>
                       <div className='flex bg-slate-200 h-[40px] justify-center items-center text-xl rounded-md'>
-                        <button type='button' className='px-4 py-2'>
+                        <button
+                          onClick={dec}
+                          disabled={quantity <= 1}
+                          type='button'
+                          className={`px-4 py-2 transition-transform duration-300 ease-in-out ${
+                            quantity <= 1
+                              ? 'opacity-50 cursor-not-allowed'
+                              : 'hover:scale-110 hover:rotate-6'
+                          }`}
+                        >
                           <FaMinus size={15} />
                         </button>
-                        <p className='px-4 font-bold py-2'>2</p>
-                        <button type='button' className='px-4 py-2'>
+                        <p className='px-4 font-bold py-2'>{quantity}</p>
+                        <button
+                          onClick={inc}
+                          disabled={quantity >= product.stock}
+                          type='button'
+                          className={`px-4 py-2 transition-transform duration-300 ease-in-out ${
+                            quantity >= product.stock
+                              ? 'opacity-50 cursor-not-allowed'
+                              : 'hover:scale-110 hover:rotate-6'
+                          }`}
+                        >
                           <FaPlus size={15} />
                         </button>
                       </div>
                       <div className=''>
                         <button
+                          onClick={add_cart}
                           type='button'
                           className='h-[50px] hover:shadow-md hover:shadow-bg-[#047b59] px-8 py-3 bg-[#059473] text-white font-bold text-md rounded-lg hover:bg-[#047b59] transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#047b59] focus:ring-opacity-50 '
                         >
@@ -260,6 +397,7 @@ const Details = () => {
                   )}
                   <div className=''>
                     <button
+                      onClick={add_wishlist}
                       type='button'
                       className='h-[40px] w-[40px] flex justify-center items-center cursor-pointer rounded-full bg-gradient-to-r from-pink-500 to-red-500 text-white transition-all  duration-300 hover:scale-110 hover:shadow-lg hover:shadow-pink-300/60 hover:rotate-[720deg]'
                     >
@@ -275,10 +413,12 @@ const Details = () => {
                   <div className='flex flex-col gap-5'>
                     <span
                       className={`text-${
-                        stock ? 'green' : 'red'
+                        product.stock ? 'green' : 'red'
                       }-500 font-semibold text-lg`}
                     >
-                      {stock ? `In stock(${stock})` : `Out of stock`}
+                      {product.stock
+                        ? `In stock(${product.stock})`
+                        : `Out of stock`}
                     </span>
                     <ul className='flex justify-start items-center gap-3'>
                       <li>
@@ -317,8 +457,9 @@ const Details = () => {
                   </div>
                 </div>
                 <div className='flex gap-3 '>
-                  {stock ? (
+                  {product.stock ? (
                     <button
+                      onClick={buy_now}
                       type='button'
                       className='px-6 py-3 bg-[#059473] text-white font-semibold hover:shadow-lg hover:shadow-bg-[#047b59] text-md rounded-lg hover:bg-[#047b59] transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#047b59] focus:ring-opacity-50'
                     >
@@ -371,18 +512,10 @@ const Details = () => {
                   </div>
                   <div className=''>
                     {state === 'reviews' ? (
-                      <Reviews />
+                      <Reviews product={product} />
                     ) : (
                       <p className='py-5 text-slate-600 overflow-y-auto max-h-96'>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Eligendi assumenda fugit necessitatibus laboriosam
-                        error ullam dolores est laborum praesentium quia
-                        accusantium doloremque voluptatem voluptatum vel omnis
-                        alias, repudiandae aspernatur recusandae? Maiores,
-                        minus. Saepe excepturi ipsum dignissimos distinctio enim
-                        exercitationem delectus quo voluptas doloremque? Maxime
-                        quam tenetur id culpa praesentium, nemo laborum quasi
-                        aut suscipit expedita.
+                        {product.description}
                       </p>
                     )}
                   </div>
@@ -391,47 +524,53 @@ const Details = () => {
               <div className='w-[28%] md-lg:w-full'>
                 <div className='pl-4 md-lg:pl-0'>
                   <div className='px-3 py-2 text-slate-600 bg-slate-200'>
-                    <h3 className='font-bold'>From Easy Shop</h3>
+                    <h3 className='font-bold'>From {product.shopName}</h3>
                   </div>
                   <div className='flex flex-col gap-5 mt-3 border p-3 rounded-lg'>
-                    {[1, 2, 3].map((p, i) => {
-                      return (
-                        <Link
-                          to={`/product/${p}`}
-                          key={i}
-                          className='block group'
-                        >
-                          <div className='relative h-[270px] overflow-hidden rounded-lg'>
-                            <div className='w-full h-full'>
-                              <img
-                                src={`http://localhost:3000/images/products/${p}.webp`}
-                                alt={`Category ${p} img`}
-                                className='w-full h-full object-contain transform transition-transform duration-300 ease-in-out group-hover:scale-105 group-hover:rotate-1'
-                              />
-                              <div className='absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 ease-in-out'></div>
-                            </div>
-                            {discount !== 0 && (
-                              <div className='flex justify-center items-center absolute text-white w-[38px] h-[38px] rounded-full bg-red-500 font-semibold text-xs left-2 top-2'>
-                                {discount}%
+                    {sameVendorProducts && sameVendorProducts.length > 0 ? (
+                      sameVendorProducts.map((p, i) => {
+                        return (
+                          <Link
+                            to={`/product/details/${p.slug}`}
+                            key={i}
+                            className='block group'
+                          >
+                            <div className='relative h-[270px] overflow-hidden rounded-lg'>
+                              <div className='w-full h-full'>
+                                <img
+                                  src={p.images[0]}
+                                  alt={`Same vendor Product img of ${p.name}`}
+                                  className='w-full h-full object-contain transform transition-transform duration-300 ease-in-out group-hover:scale-105 group-hover:rotate-1'
+                                />
+                                <div className='absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 ease-in-out'></div>
                               </div>
-                            )}
-                          </div>
-                          <div className='mt-2'>
-                            <h3 className='text-lg md:text-xl font-semibold text-slate-700 group-hover:text-green-600 transition-colors duration-300'>
-                              Product name
-                            </h3>
-                            <div className='flex items-center justify-between mt-1'>
-                              <p className='text-lg font-bold text-green-600'>
-                                $399
-                              </p>
-                              <div className=''>
-                                <Ratings ratings={3.5} />
+                              {p.discount && p.discount > 0 && (
+                                <div className='flex justify-center items-center absolute text-white w-[38px] h-[38px] rounded-full bg-red-500 font-semibold text-xs left-2 top-2'>
+                                  {p.discount}%
+                                </div>
+                              )}
+                            </div>
+                            <div className='mt-2'>
+                              <h3 className='text-lg md:text-xl font-semibold text-slate-700 group-hover:text-green-600 transition-colors duration-300'>
+                                {p.name}
+                              </h3>
+                              <div className='flex items-center justify-between mt-1'>
+                                <p className='text-lg font-bold text-green-600'>
+                                  ${p.price}
+                                </p>
+                                <div>
+                                  <Ratings ratings={p.rating} />
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </Link>
-                      );
-                    })}
+                          </Link>
+                        );
+                      })
+                    ) : (
+                      <div className='text-center text-gray-500 font-semibold py-4'>
+                        No products available from the same vendor.
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -444,92 +583,101 @@ const Details = () => {
               Related Products
             </h3>
             <div className=' border p-3 rounded-lg'>
-              <Swiper
-                slidesPerView='auto'
-                breakpoints={{
-                  1536: {
-                    // Extra large desktops
-                    slidesPerView: 5,
-                    spaceBetween: 35,
-                  },
-                  1280: {
-                    // Large desktops
-                    slidesPerView: 4,
-                    spaceBetween: 30,
-                  },
-                  1024: {
-                    // Tablet landscape / small desktops
-                    slidesPerView: 3,
-                    spaceBetween: 25,
-                  },
-                  768: {
-                    // Tablet portrait
-                    slidesPerView: 2.5,
-                    spaceBetween: 20,
-                  },
-                  640: {
-                    // Mobile
-                    slidesPerView: 2,
-                    spaceBetween: 20,
-                  },
-                  480: {
-                    // Small mobile
-                    slidesPerView: 1.5,
-                    spaceBetween: 15,
-                  },
-                  320: {
-                    // Extra small mobile
-                    slidesPerView: 1,
-                    spaceBetween: 10,
-                  },
-                }}
-                spaceBetween={25}
-                loop={true}
-                pagination={{
-                  clickable: true,
-                  el: '.custom_bullet',
-                }}
-                modules={[Pagination]}
-                className='mySwiper'
-              >
-                {[1, 2, 3, 4, 5, 6].map((p, i) => {
-                  return (
-                    <SwiperSlide key={i}>
-                      <Link className='block group'>
-                        <div className='relative h-[270px] overflow-hidden rounded-lg'>
-                          <div className='w-full h-full'>
-                            <img
-                              src={`http://localhost:3000/images/products/${p}.webp`}
-                              alt={`Category ${p} img`}
-                              className='w-full h-full object-contain transform transition-transform duration-300 ease-in-out group-hover:scale-105 group-hover:rotate-1'
-                            />
+              {relatedProducts && relatedProducts.length > 0 ? (
+                <Swiper
+                  slidesPerView='auto'
+                  breakpoints={{
+                    1536: {
+                      // Extra large desktops
+                      slidesPerView: 5,
+                      spaceBetween: 35,
+                    },
+                    1280: {
+                      // Large desktops
+                      slidesPerView: 4,
+                      spaceBetween: 30,
+                    },
+                    1024: {
+                      // Tablet landscape / small desktops
+                      slidesPerView: 3,
+                      spaceBetween: 25,
+                    },
+                    768: {
+                      // Tablet portrait
+                      slidesPerView: 2.5,
+                      spaceBetween: 20,
+                    },
+                    640: {
+                      // Mobile
+                      slidesPerView: 2,
+                      spaceBetween: 20,
+                    },
+                    480: {
+                      // Small mobile
+                      slidesPerView: 1.5,
+                      spaceBetween: 15,
+                    },
+                    320: {
+                      // Extra small mobile
+                      slidesPerView: 1,
+                      spaceBetween: 10,
+                    },
+                  }}
+                  spaceBetween={25}
+                  loop={true}
+                  pagination={{
+                    clickable: true,
+                    el: '.custom_bullet',
+                  }}
+                  modules={[Pagination]}
+                  className='mySwiper'
+                >
+                  {relatedProducts.map((p, i) => {
+                    return (
+                      <SwiperSlide key={i}>
+                        <Link
+                          to={`/product/details/${p.slug}`}
+                          className='block group'
+                        >
+                          <div className='relative h-[270px] overflow-hidden rounded-lg'>
+                            <div className='w-full h-full'>
+                              <img
+                                src={p.images[0]}
+                                alt={`Related Product img of ${p.name}`}
+                                className='w-full h-full object-contain transform transition-transform duration-300 ease-in-out group-hover:scale-105 group-hover:rotate-1'
+                              />
 
-                            <div className='absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 ease-in-out'></div>
-                          </div>
-                          {discount !== 0 && (
-                            <div className='flex justify-center items-center absolute text-white w-[38px] h-[38px] rounded-full bg-red-500 font-semibold text-xs left-2 top-2'>
-                              {discount}%
+                              <div className='absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 ease-in-out'></div>
                             </div>
-                          )}
-                        </div>
-                        <div className='flex flex-col gap-1 p-4 mt-2'>
-                          <h3 className='text-lg md:text-xl font-semibold text-slate-700 group-hover:text-green-600 transition-colors duration-300'>
-                            Product name
-                          </h3>
-                          <div className='flex items-center justify-between mt-1'>
-                            <p className='text-lg font-bold text-green-600'>
-                              $399
-                            </p>
-                            <div className=''>
-                              <Ratings ratings={3.5} />
+                            {p.discount && p.discount > 0 && (
+                              <div className='flex justify-center items-center absolute text-white w-[38px] h-[38px] rounded-full bg-red-500 font-semibold text-xs left-2 top-2'>
+                                {p.discount}%
+                              </div>
+                            )}
+                          </div>
+                          <div className='flex flex-col gap-1 p-4 mt-2'>
+                            <h3 className='text-lg md:text-xl font-semibold text-slate-700 group-hover:text-green-600 transition-colors duration-300'>
+                              {p.name}
+                            </h3>
+                            <div className='flex items-center justify-between mt-1'>
+                              <p className='text-lg font-bold text-green-600'>
+                                ${p.price}
+                              </p>
+                              <div className=''>
+                                <Ratings ratings={3.5} />
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </Link>
-                    </SwiperSlide>
-                  );
-                })}
-              </Swiper>
+                        </Link>
+                      </SwiperSlide>
+                    );
+                  })}
+                </Swiper>
+              ) : (
+                <div className='text-center text-gray-500 font-semibold py-4'>
+                  No related products available.
+                </div>
+              )}
             </div>
             <div className='flex justify-center items-center w-full py-10'>
               <div className='custom_bullet flex justify-center gap-2'></div>
