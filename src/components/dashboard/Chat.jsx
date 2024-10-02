@@ -2,14 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import io from 'socket.io-client';
-
 import { AiOutlineMessage } from 'react-icons/ai';
 import { GrEmoji } from 'react-icons/gr';
 import { IoSend } from 'react-icons/io5';
 import { FaPlus } from 'react-icons/fa6';
 
+import io from 'socket.io-client';
 import toast from 'react-hot-toast';
+
+import { add_friend } from '../../store/reducers/chatReducer';
 
 const socket = io('http://localhost:5000');
 
@@ -28,7 +29,16 @@ const Chat = () => {
 
   useEffect(() => {
     socket.emit('add_user', userInfo.id, userInfo);
-  });
+  }, [userInfo]);
+
+  useEffect(() => {
+    dispatch(
+      add_friend({
+        vendorId: vendorId || '',
+        userId: userInfo.id || '',
+      })
+    );
+  }, [dispatch, userInfo.id, vendorId]);
 
   return (
     <div className='bg-white p-3 rounded-md hover:shadow-lg transition-all transform duration-300'>
