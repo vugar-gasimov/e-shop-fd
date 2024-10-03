@@ -37,70 +37,70 @@ const Dashboard = () => {
               } `}
             >
               <ul className='py-2 text-slate-600 px-4'>
-                <li className='p-3 rounded-lg flex justify-start items-center gap-2 py-2 group hover:shadow-lg transition-all duration-300'>
-                  <span className='transform text-xl group-hover:rotate-12 group-hover:scale-110 group-hover:text-[#045b46] transition-all duration-300'>
-                    <VscGraph />
-                  </span>
+                <li className='p-3 rounded-lg py-2 group hover:shadow-lg transition-all duration-300'>
                   <Link
                     to='/dashboard'
-                    className='block group-hover:scale-110 font-semibold'
+                    className='group-hover:scale-110 font-semibold  flex justify-start items-center gap-2'
                   >
-                    Dashboard
+                    <span className='transform text-xl group-hover:rotate-12 group-hover:scale-110 group-hover:text-[#045b46] transition-all duration-300'>
+                      <VscGraph />
+                    </span>
+                    <span>Dashboard</span>
                   </Link>
                 </li>
-                <li className='p-3 rounded-lg flex justify-start items-center gap-2 py-2 group hover:shadow-lg transition-all duration-300'>
-                  <span className='transform text-xl group-hover:rotate-12 group-hover:scale-110 group-hover:text-[#045b46] transition-all duration-300'>
-                    <FaShoppingBag />
-                  </span>
+                <li className='p-3 rounded-lg  py-2 group hover:shadow-lg transition-all duration-300'>
                   <Link
                     to='/dashboard/my-orders'
-                    className='block group-hover:scale-110 font-semibold'
+                    className=' group-hover:scale-110 font-semibold flex justify-start items-center gap-2'
                   >
-                    My Orders
+                    <span className='transform text-xl group-hover:rotate-12 group-hover:scale-110 group-hover:text-[#045b46] transition-all duration-300'>
+                      <FaShoppingBag />
+                    </span>
+                    <span>My Orders</span>
                   </Link>
                 </li>
-                <li className='p-3 rounded-lg flex justify-start items-center gap-2 py-2 group hover:shadow-lg transition-all duration-300'>
-                  <span className='transform text-xl group-hover:rotate-12 group-hover:scale-110 group-hover:text-[#045b46] transition-all duration-300'>
-                    <PiListHeartFill />
-                  </span>
+                <li className='p-3 rounded-lg  py-2 group hover:shadow-lg transition-all duration-300'>
                   <Link
-                    to='/dashboard/wishlist'
-                    className='block group-hover:scale-110 font-semibold'
+                    to='/dashboard/wishlist '
+                    className=' group-hover:scale-110 font-semibold flex justify-start items-center gap-2'
                   >
-                    Wishlist
+                    <span className='transform text-xl group-hover:rotate-12 group-hover:scale-110 group-hover:text-[#045b46] transition-all duration-300'>
+                      <PiListHeartFill />
+                    </span>
+                    <span> Wishlist</span>
                   </Link>
                 </li>
-                <li className='p-3 rounded-lg flex justify-start items-center gap-2 py-2 group hover:shadow-lg transition-all duration-300'>
-                  <span className='transform text-xl group-hover:rotate-12 group-hover:scale-110 group-hover:text-[#045b46] transition-all duration-300'>
-                    <IoMdChatbubbles />
-                  </span>
+                <li className='p-3 rounded-lg  py-2 group hover:shadow-lg transition-all duration-300'>
                   <Link
                     to='/dashboard/chat'
-                    className='block group-hover:scale-110 font-semibold'
+                    className=' group-hover:scale-110 font-semibold flex justify-start items-center gap-2'
                   >
-                    Chat
+                    <span className='transform text-xl group-hover:rotate-12 group-hover:scale-110 group-hover:text-[#045b46] transition-all duration-300'>
+                      <IoMdChatbubbles />
+                    </span>
+                    <span>Chat</span>
                   </Link>
                 </li>
-                <li className='p-3 rounded-lg flex justify-start items-center gap-2 py-2 group hover:shadow-lg transition-all duration-300'>
-                  <span className='transform text-xl group-hover:rotate-12 group-hover:scale-110 group-hover:text-[#045b46] transition-all duration-300'>
-                    <GrShieldSecurity />
-                  </span>
+                <li className='p-3 rounded-lg  py-2 group hover:shadow-lg transition-all duration-300'>
                   <Link
                     to='/dashboard/change-password'
-                    className='block group-hover:scale-110 font-semibold'
+                    className=' group-hover:scale-110 font-semibold flex justify-start items-center gap-2'
                   >
-                    Change Password
+                    <span className='transform text-xl group-hover:rotate-12 group-hover:scale-110 group-hover:text-[#045b46] transition-all duration-300'>
+                      <GrShieldSecurity />
+                    </span>
+                    <span>Change Password</span>
                   </Link>
                 </li>
-                <li className='p-3 rounded-lg flex justify-start items-center gap-2 py-2 group hover:shadow-lg transition-all duration-300'>
-                  <span className='transform text-xl group-hover:rotate-12 group-hover:scale-110 group-hover:text-[#045b46] transition-all duration-300'>
-                    <GiExitDoor />
-                  </span>
+                <li className='p-3 rounded-lg  py-2 group hover:shadow-lg transition-all duration-300'>
                   <Link
                     to='/dashboard'
-                    className='block group-hover:scale-110 font-semibold '
+                    className=' group-hover:scale-110 font-semibold flex justify-start items-center gap-2'
                   >
-                    Logout
+                    <span className='transform text-xl group-hover:rotate-12 group-hover:scale-110 group-hover:text-[#045b46] transition-all duration-300'>
+                      <GiExitDoor />
+                    </span>
+                    <span>Logout</span>
                   </Link>
                 </li>
               </ul>
