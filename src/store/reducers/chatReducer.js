@@ -59,7 +59,7 @@ export const chatReducer = createSlice({
         state.successMessage =
           payload.message || 'Friend added to chat successfully';
         state.friendMessages = payload.messages || [];
-        state.my_friends = payload.myFriends || [];
+        state.my_friends = payload.my_friends;
         state.currentFriend = payload.currentFd || '';
       })
       .addCase(send_message.pending, (state) => {

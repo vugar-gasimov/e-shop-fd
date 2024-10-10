@@ -121,16 +121,42 @@ const Chat = () => {
               </div>
               <div className='h-[400px] w-full bg-slate-100 p-3 rounded-md'>
                 <div className='w-full h-full overflow-y-auto flex flex-col gap-3'>
-                  <div className='w-full flex gap-2 justify-start items-center text-[14px]'>
-                    <img
-                      className='w-[35px] h-[35px] '
-                      src='http://localhost:3000/images/user.png'
-                      alt=''
-                    />
-                    <div className='p-2 bg-purple-500 text-white rounded-md'>
-                      <span>weewewewewewewe</span>
-                    </div>
-                  </div>
+                  {friendMessages.map((m, i) => {
+                    if (currentFriend?.fdId !== m.receiverId) {
+                      return (
+                        <div
+                          key={i}
+                          className='w-full flex gap-2 justify-start items-center text-[14px]'
+                        >
+                          <img
+                            className='w-[35px] h-[35px] '
+                            src='http://localhost:3000/images/user.png'
+                            alt=''
+                          />
+                          <div className='p-2 bg-purple-500 text-white rounded-md'>
+                            <span>{m.message}</span>
+                          </div>
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div
+                          key={i}
+                          className='w-full flex gap-2 justify-start items-center text-[14px]'
+                        >
+                          <img
+                            className='w-[35px] h-[35px] '
+                            src='http://localhost:3000/images/user.png'
+                            alt=''
+                          />
+                          <div className='p-2 bg-purple-500 text-white rounded-md'>
+                            <span>{m.message}</span>
+                          </div>
+                        </div>
+                      );
+                    }
+                  })}
+
                   <div className='w-full flex gap-2 justify-end items-center text-[14px]'>
                     <img
                       className='w-[35px] h-[35px] '
