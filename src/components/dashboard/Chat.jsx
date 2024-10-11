@@ -90,7 +90,7 @@ const Chat = () => {
                 </Link>
               ))
             ) : (
-              <div>No friends available</div>
+              <div>No vendors available</div>
             )}
           </div>
         </div>
@@ -142,31 +142,20 @@ const Chat = () => {
                       return (
                         <div
                           key={i}
-                          className='w-full flex gap-2 justify-start items-center text-[14px]'
+                          className='w-full flex gap-2 justify-end items-center text-[14px]'
                         >
                           <img
                             className='w-[35px] h-[35px] '
                             src='http://localhost:3000/images/user.png'
                             alt=''
                           />
-                          <div className='p-2 bg-purple-500 text-white rounded-md'>
+                          <div className='p-2 bg-cyan-500 text-white rounded-md'>
                             <span>{m.message}</span>
                           </div>
                         </div>
                       );
                     }
                   })}
-
-                  <div className='w-full flex gap-2 justify-end items-center text-[14px]'>
-                    <img
-                      className='w-[35px] h-[35px] '
-                      src='http://localhost:3000/images/user.png'
-                      alt=''
-                    />
-                    <div className='p-2 bg-cyan-500 text-white rounded-md'>
-                      <span>ewwwwwwwww</span>
-                    </div>
-                  </div>
                 </div>
               </div>
               <div className='flex p-2 justify-between items-center w-full'>
