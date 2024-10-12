@@ -8,20 +8,28 @@ import { IoSend } from 'react-icons/io5';
 import { FaPlus } from 'react-icons/fa6';
 
 import io from 'socket.io-client';
-// import toast from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
-import { add_friend, send_message } from '../../store/reducers/chatReducer';
+import {
+  add_friend,
+  clearMessages,
+  send_message,
+  updateMessage,
+} from '../../store/reducers/chatReducer';
 
 const socket = io('http://localhost:5000');
 
 const Chat = () => {
   const dispatch = useDispatch();
+  const scrollRef = useRef();
   const { vendorId } = useParams();
   const { userInfo } = useSelector((state) => state.auth || {});
   const { friendMessages, currentFriend, my_friends, successMessage } =
     useSelector((state) => state.chat || {});
 
   const [text, setText] = useState('');
+  const [receiverMessage, setReceiverMessage] = useState('');
+  const [activeVendor, setActiveVendor] = useState([]);
 
   useEffect(() => {
     socket.emit('add_user', userInfo.id, userInfo);
@@ -51,6 +59,43 @@ const Chat = () => {
       setText('');
     }
   };
+
+  useEffect(() => {
+    socket.on('seller_message', (msg) => {
+      setReceiverMessage(msg);
+    });
+    socket.on('activeVendor', (vendors) => {
+      setActiveVendor(vendors);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (successMessage) {
+      socket.emit(
+        'send_customer_message',
+        friendMessages[friendMessages.length - 1]
+      );
+      dispatch(clearMessages());
+    }
+  }, [dispatch, friendMessages, successMessage]);
+
+  useEffect(() => {
+    if (receiverMessage) {
+      if (
+        vendorId === receiverMessage.senderId &&
+        userInfo.id === receiverMessage.receiverId
+      ) {
+        dispatch(updateMessage(receiverMessage));
+      } else {
+        toast.success(`${receiverMessage.senderName} sent a message.`);
+        dispatch(clearMessages());
+      }
+    }
+  }, [receiverMessage, vendorId, userInfo, dispatch]);
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [friendMessages]);
 
   return (
     <div className='bg-white p-3 rounded-md hover:shadow-lg transition-all transform duration-300'>
@@ -84,7 +129,9 @@ const Chat = () => {
                       />
                     </div>
                     {/* Online status dot */}
-                    <div className='w-[10px] h-[10px] rounded-full bg-green-500 absolute right-0 bottom-0 border-white border-2'></div>
+                    {activeVendor.some((c) => c.vendorId === f.fdId) && (
+                      <div className='w-[10px] h-[10px] rounded-full bg-green-500 absolute right-0 bottom-0 border-white border-2'></div>
+                    )}
                   </div>
                   <span>{f.name || 'Unknown User'}</span>
                 </Link>
@@ -100,7 +147,12 @@ const Chat = () => {
               <div className='flex justify-start gap-3 items-center text-slate-600 text-xl h-[50px]'>
                 <div className='w-[35px] h-[35px] relative'>
                   {/* Online status dot */}
-                  <div className='w-[10px] h-[10px] rounded-full bg-green-500 absolute right-0 bottom-0 border-white border-2'></div>
+                  {activeVendor.some(
+                    (c) => c.vendorId === currentFriend.fdId
+                  ) && (
+                    <div className='w-[10px] h-[10px] rounded-full bg-green-500 absolute right-0 bottom-0 border-white border-2'></div>
+                  )}
+
                   <div className='w-[35px] h-[35px] rounded-full overflow-hidden border-slate-500 border-2'>
                     {/* User Image */}
                     <img
@@ -126,6 +178,7 @@ const Chat = () => {
                       return (
                         <div
                           key={i}
+                          ref={scrollRef}
                           className='w-full flex gap-2 justify-start items-center text-[14px]'
                         >
                           <img
@@ -142,6 +195,7 @@ const Chat = () => {
                       return (
                         <div
                           key={i}
+                          ref={scrollRef}
                           className='w-full flex gap-2 justify-end items-center text-[14px]'
                         >
                           <img
