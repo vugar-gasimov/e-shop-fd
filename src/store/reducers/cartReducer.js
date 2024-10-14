@@ -133,9 +133,13 @@ export const cartReducer = createSlice({
     errorMessage: '',
   },
   reducers: {
-    clearMessages: (state) => {
+    clearMessages: (state, _) => {
       state.successMessage = '';
       state.errorMessage = '';
+    },
+    reset_count: (state, _) => {
+      state.cart_products_count = 0;
+      state.wish_products_count = 0;
     },
   },
   extraReducers: (builder) => {
@@ -239,6 +243,6 @@ export const cartReducer = createSlice({
   },
 });
 
-export const { clearMessages } = cartReducer.actions;
+export const { clearMessages, reset_count } = cartReducer.actions;
 
 export default cartReducer.reducer;

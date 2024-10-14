@@ -48,9 +48,12 @@ export const authReducer = createSlice({
     errorMessage: '',
   },
   reducers: {
-    clearMessages: (state) => {
+    clearMessages: (state, _) => {
       state.successMessage = '';
       state.errorMessage = '';
+    },
+    user_reset: (state, _) => {
+      state.userInfo = '';
     },
   },
   extraReducers: (builder) => {
@@ -86,6 +89,6 @@ export const authReducer = createSlice({
   },
 });
 
-export const { clearMessages } = authReducer.actions;
+export const { clearMessages, user_reset } = authReducer.actions;
 
 export default authReducer.reducer;

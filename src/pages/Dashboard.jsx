@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
-
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import { FaList, FaShoppingBag } from 'react-icons/fa';
 import { VscGraph } from 'react-icons/vsc';
@@ -11,8 +9,31 @@ import { IoMdChatbubbles } from 'react-icons/io';
 import { GrShieldSecurity } from 'react-icons/gr';
 import { GiExitDoor } from 'react-icons/gi';
 
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+
+import api from '../api/api';
+
+import { user_reset } from '../store/reducers/authReducer';
+import { reset_count } from '../store/reducers/cartReducer';
+
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [filterShow, setFilterShow] = useState(false);
+
+  const logoutHandler = async () => {
+    try {
+      const { data } = await api.get('/customer/logout');
+
+      localStorage.removeItem('customerToken');
+      navigate('/login');
+      dispatch(user_reset());
+      dispatch(reset_count());
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
   return (
     <>
       <Header />
@@ -92,16 +113,16 @@ const Dashboard = () => {
                     <span>Change Password</span>
                   </Link>
                 </li>
-                <li className='p-3 rounded-lg  py-2 group hover:shadow-lg transition-all duration-300'>
-                  <Link
-                    to='/dashboard'
-                    className=' group-hover:scale-110 font-semibold flex justify-start items-center gap-2'
-                  >
+                <li
+                  onClick={logoutHandler}
+                  className='p-3 rounded-lg  py-2 group hover:shadow-lg transition-all duration-300 cursor-pointer'
+                >
+                  <div className=' group-hover:scale-110 font-semibold flex justify-start items-center gap-2'>
                     <span className='transform text-xl group-hover:rotate-12 group-hover:scale-110 group-hover:text-[#045b46] transition-all duration-300'>
                       <GiExitDoor />
                     </span>
                     <span>Logout</span>
-                  </Link>
+                  </div>
                 </li>
               </ul>
             </div>
