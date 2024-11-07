@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import CategoryShop from './pages/CategoryShop';
 import Payment from './pages/Payment';
 import Dashboard from './pages/Dashboard';
+import ConfirmOrder from './pages/ConfirmOrder';
 
 import SearchProducts from './components/SearchProducts';
 import Chat from './components/dashboard/Chat';
@@ -44,6 +45,7 @@ function App() {
         <Route path='/products?' element={<CategoryShop />} />
         <Route path='/products/search?' element={<SearchProducts />} />
         <Route path='/product/details/:slug' element={<Details />} />
+        <Route path='/order/confirm?' element={<ConfirmOrder />} />
 
         <Route path='/dashboard' element={<ProtectUser />}>
           <Route path='' element={<Dashboard />}>

@@ -30,12 +30,14 @@ const CheckoutForm = ({ orderId }) => {
       return;
     }
     setLoading(true);
+
     const { error } = await stripe.confirmPayment({
       elements,
-      confirmPayment: {
-        return_url: 'https://localhost:3000/order/confirm',
+      confirmParams: {
+        return_url: 'http://localhost:3000/order/confirm',
       },
     });
+
     if (error.type === 'card_error' || error.type === 'validation_error') {
       setMessage(error.message);
     } else {
