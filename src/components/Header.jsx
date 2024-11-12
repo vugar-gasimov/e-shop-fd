@@ -1,4 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+
 import { TfiEmail } from 'react-icons/tfi';
 import {
   FaHeart,
@@ -6,18 +9,20 @@ import {
   FaListUl,
   FaPhoneSquareAlt,
 } from 'react-icons/fa';
+import { TiShoppingCart } from 'react-icons/ti';
 import { ImFacebook2 } from 'react-icons/im';
 import { FaSquareXTwitter } from 'react-icons/fa6';
 import { VscGithub } from 'react-icons/vsc';
 import { TbArrowBigDownFilled } from 'react-icons/tb';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { PiUserCircleFill } from 'react-icons/pi';
 import { RiLockPasswordFill } from 'react-icons/ri';
-import { TiShoppingCart } from 'react-icons/ti';
 import { BiSolidPhoneCall } from 'react-icons/bi';
 import { TbMailCog } from 'react-icons/tb';
-import { useDispatch, useSelector } from 'react-redux';
-import { get_cart_products } from '../store/reducers/cartReducer';
+
+import {
+  get_cart_products,
+  get_wishlist_products,
+} from '../store/reducers/cartReducer';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -28,6 +33,7 @@ const Header = () => {
   const { cart_products_count, wish_products_count } = useSelector(
     (state) => state.cart || {}
   );
+
   const { pathname } = useLocation();
   const [showSidebar, setShowSidebar] = useState(true);
   const [showCategory, setShowCategory] = useState(true);
@@ -68,6 +74,13 @@ const Header = () => {
   const searchProducts = () => {
     navigate(`/products/search?category=${category}&&value=${searchValue}`);
   };
+
+  useEffect(() => {
+    if (userInfo) {
+      dispatch(get_cart_products(userInfo.id));
+      dispatch(get_wishlist_products(userInfo.id));
+    }
+  }, [dispatch, userInfo]);
 
   return (
     <header className='w-full bg-white'>
@@ -264,6 +277,9 @@ const Header = () => {
                   <div className='flex justify-center gap-5'>
                     <div className='relative flex justify-center items-center cursor-pointer w-[35px] h-[35px] rounded-full bg-[#e2e2e2]'>
                       <button
+                        onClick={() =>
+                          navigate(userInfo ? '/dashboard/wishlist' : '/login')
+                        }
                         type='button'
                         className=' text-xl text-green-500 hover:scale-105 
                       w-[38px] h-[38px] hover:bg-[#059473]

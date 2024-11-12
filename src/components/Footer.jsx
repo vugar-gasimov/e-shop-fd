@@ -1,11 +1,23 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { ImFacebook2 } from 'react-icons/im';
 import { FaSquareXTwitter } from 'react-icons/fa6';
 import { VscGithub } from 'react-icons/vsc';
 import { FaLinkedin } from 'react-icons/fa';
-
+import { FaHeart } from 'react-icons/fa';
+import { TiShoppingCart } from 'react-icons/ti';
 const Footer = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { userInfo } = useSelector((state) => state.auth || {});
+
+  const { cart_products_count, wish_products_count } = useSelector(
+    (state) => state.cart || {}
+  );
+
   return (
     <footer className='bg-[#f3f6fa]'>
       <section className='w-[85%] flex flex-wrap mx-auto border-b py-16 md-lg:pb-10 sm:pb-6'>
@@ -156,6 +168,23 @@ const Footer = () => {
       </section>
       <section className='w-[90%] flex justify-center flex-wrap items-center text-slate-600 mx-auto py-5 text-center'>
         <p>Copyright © 2024 Easy Shop Ecommerce. All rights reserved.</p>
+      </section>
+      <section className='hidden fixed md-lg:block w-[50px] h-[110px] bottom-3 right-2 bg-white rounded-full p-2'>
+        <div className='w-full h-full flex gap-3 flex-col justify-center items-center'>
+            <button
+                        onClick={() =>
+                          navigate(userInfo ? '/dashboard/wishlist' : '/login')
+                        }
+                        type='button'
+                        className=' text-xl text-green-500 hover:scale-105 
+                      w-[38px] h-[38px] hover:bg-[#059473]
+                      hover:text-white flex justify-center items-center bg-white
+                      rounded-full transition-all duration-500
+                      hover:rotate-[720deg]'
+                      >
+                        <FaHeart />
+                      </button>
+        </div>
       </section>
     </footer>
   );
