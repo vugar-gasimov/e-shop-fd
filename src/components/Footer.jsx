@@ -169,21 +169,48 @@ const Footer = () => {
       <section className='w-[90%] flex justify-center flex-wrap items-center text-slate-600 mx-auto py-5 text-center'>
         <p>Copyright © 2024 Easy Shop Ecommerce. All rights reserved.</p>
       </section>
-      <section className='hidden fixed md-lg:block w-[50px] h-[110px] bottom-3 right-2 bg-white rounded-full p-2'>
+      <section className='hidden fixed md-lg:block w-[50px] h-[110px] bottom-3 right-2 bg-white rounded-full p-2 bg-transparent'>
         <div className='w-full h-full flex gap-3 flex-col justify-center items-center'>
+          <div className='relative flex justify-center items-center'>
             <button
-                        onClick={() =>
-                          navigate(userInfo ? '/dashboard/wishlist' : '/login')
-                        }
-                        type='button'
-                        className=' text-xl text-green-500 hover:scale-105 
-                      w-[38px] h-[38px] hover:bg-[#059473]
-                      hover:text-white flex justify-center items-center bg-white
-                      rounded-full transition-all duration-500
-                      hover:rotate-[720deg]'
-                      >
-                        <FaHeart />
-                      </button>
+              onClick={() =>
+                navigate(userInfo ? '/dashboard/wishlist' : '/login')
+              }
+              type='button'
+              className=' text-xl text-white hover:scale-105 
+            w-[35px] h-[35px] hover:bg-[#059473]
+            hover:text-white flex justify-center items-center bg-green-500 
+            rounded-full transition-all duration-500
+            hover:rotate-[720deg]'
+            >
+              <FaHeart />
+            </button>
+            {wish_products_count !== 0 && (
+              <div className='w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px] text-sm'>
+                {isNaN(wish_products_count) ? 0 : wish_products_count}
+              </div>
+            )}
+          </div>
+
+          <div className='relative flex justify-center items-center'>
+            <button
+              onClick={() => navigate(userInfo ? '/carts' : '/login')}
+              type='button'
+              className='text-xl text-white hover:scale-105 
+            w-[35px] h-[35px] hover:bg-[#059473]
+            hover:text-white flex justify-center items-center bg-green-500
+            rounded-full transition-all duration-500
+            hover:rotate-[720deg]'
+            >
+              <TiShoppingCart size={24} />
+            </button>
+
+            {cart_products_count !== 0 && (
+              <div className='w-[20px] h-[20px] absolute bg-red-500 rounded-full text-white flex justify-center items-center -top-[3px] -right-[5px] text-sm'>
+                {isNaN(cart_products_count) ? 0 : cart_products_count}
+              </div>
+            )}
+          </div>
         </div>
       </section>
     </footer>
