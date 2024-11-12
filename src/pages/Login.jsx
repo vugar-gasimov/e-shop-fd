@@ -60,7 +60,6 @@ const Login = () => {
               <h2 className='text-center w-full text-xl text-slate-600 font-bold'>
                 Login Page
               </h2>
-
               <div className=''>
                 <form onSubmit={login} className='text-slate-600'>
                   <div className='flex flex-col gap-1 mb-4'>
@@ -124,7 +123,7 @@ const Login = () => {
                   <span className=''>Login with Gmail</span>
                 </button>
               </div>
-              <div className='text-center text-slate-600 pt-1'>
+              <div className='text-center text-slate-600 pt-1 pb-2'>
                 <p className=''>
                   Don't have an account{' '}
                   <Link
@@ -135,6 +134,25 @@ const Login = () => {
                   </Link>
                 </p>
               </div>
+
+              <a
+                target='_blank'
+                href='http://localhost:3001/login'
+                rel='noopener noreferrer'
+              >
+                <div className='px-8 w-full py-2 bg-[#02e3e0] shadow-md hover:shadow-md hover:bg-[#2db3b1] hover:shadow-[#2db3b1]/50 text-white rounded-md flex justify-center items-center gap-2 mb-3 duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#30c3c0]  focus:ring-opacity-50'>
+                  Login as a vendor
+                </div>
+              </a>
+              <a
+                target='_blank'
+                href='http://localhost:3001/register'
+                rel='noopener noreferrer'
+              >
+                <div className='px-8 w-full py-2 bg-[#ad2cc4] shadow-md hover:shadow-md hover:bg-[#852896] hover:shadow-[#852896]/50 text-white rounded-md flex justify-center items-center gap-2 mb-3 duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#be30d7]   focus:ring-opacity-50'>
+                  Register as a vendor
+                </div>
+              </a>
             </div>
             <div className='relative w-full h-full py-4 md:px-4 pr-4'>
               <div className='relative w-full h-full'>
