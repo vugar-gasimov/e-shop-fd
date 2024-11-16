@@ -1,9 +1,20 @@
-import React from 'react';
-import Carousel from 'react-multi-carousel';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+
+import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 
+import { get_banners } from '../store/reducers/homeReducer';
+
 const Banner = () => {
+  const dispatch = useDispatch();
+  const { banners } = useSelector((state) => state.home);
+
+  useEffect(() => {
+    dispatch(get_banners());
+  }, [dispatch]);
+
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 3000 },
@@ -37,14 +48,31 @@ const Banner = () => {
                 showDots={true}
                 responsive={responsive}
               >
-                {[1, 2, 3, 4, 5, 6].map((img, i) => (
-                  <Link key={i} to='#'>
-                    <img
-                      src={`http://localhost:3000/images/banner/${img}.jpg`}
-                      alt={`Banner img ${img}`}
-                    />
-                  </Link>
-                ))}
+                {banners.length > 0
+                  ? banners.map((img, i) => (
+                      <Link
+                        key={img._id || i}
+                        to={`/product/details/${img.link}`}
+                      >
+                        <img
+                          src={img.banner}
+                          alt={`Banner img ${img.link}`}
+                          className='w-full h-[370px]  object-cover rounded-lg shadow-lg'
+                        />
+                      </Link>
+                    ))
+                  : [1, 2, 3, 4, 5, 6].map((img, i) => (
+                      <Link key={i} to='#'>
+                        <img
+                          src={`http://localhost:3000/images/banner/${img}.jpg`}
+                          alt='Default banners'
+                          onError={(e) => {
+                            e.target.src = `http://localhost:3001/images/banner/${img}.jpg`; // Fallback for default image
+                          }}
+                          className='w-full h-[370px]  object-cover rounded-lg shadow-lg'
+                        />
+                      </Link>
+                    ))}
               </Carousel>
             </div>
           </div>

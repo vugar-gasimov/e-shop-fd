@@ -104,6 +104,19 @@ export const get_reviews = createAsyncThunk(
   }
 ); // End of get product reviews method
 
+export const get_banners = createAsyncThunk(
+  'banner/get_banners',
+  async (_, { fulfillWithValue }) => {
+    try {
+      const { data } = await api.get(`/get/banners`);
+
+      return fulfillWithValue(data);
+    } catch (error) {
+      console.log(error.response?.data?.message || 'Something went wrong');
+    }
+  }
+); // End of get banners method
+
 export const homeReducer = createSlice({
   name: 'home',
   initialState: {
@@ -127,6 +140,7 @@ export const homeReducer = createSlice({
     totalReview: 0,
     rating_review: [],
     reviews: [],
+    banners: [],
   },
   reducers: {
     clearMessages: (state) => {
@@ -241,7 +255,6 @@ export const homeReducer = createSlice({
         state.loading = true;
         state.errorMessage = '';
       })
-
       .addCase(get_reviews.fulfilled, (state, { payload }) => {
         state.loading = false;
 
@@ -249,10 +262,14 @@ export const homeReducer = createSlice({
         state.rating_review = payload.rating_review;
         state.reviews = payload.reviews;
       })
-
       .addCase(get_reviews.rejected, (state, { payload }) => {
         state.loading = false;
         state.errorMessage = payload.error || 'Failed to get Product reviews';
+      })
+      .addCase(get_banners.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.successMessage = payload.message;
+        state.banners = payload.banners;
       });
   },
 });
